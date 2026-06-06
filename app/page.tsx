@@ -318,6 +318,45 @@ const brands = [
   "https://backoffice.ghorerbazar.com/brand_images/YuK9J1768888227.png",
 ];
 
+const testimonials = [
+  {
+    quote: "২য় বার Ghorerbazar থেকে অর্ডার করলাম। আগের মতো এবারও দারুণ কোয়ালিটি আর দ্রুত ডেলিভারি পেয়েছি। একদম সন্তুষ্ট।",
+    name: "Ayesha Khan",
+    role: "Banker",
+    avatar: "",
+  },
+  {
+    quote: "এই অবিশ্বাসের জায়গাতে আস্থাশীল একটি প্রতিষ্ঠান ঘরের বাজার। পণ্য হাতে পাওয়ার পর খুব ভালো লেগেছে।",
+    name: "Fariha Akter Tumpa",
+    role: "Entrepreneur",
+    avatar: "https://backoffice.ghorerbazar.com/testimonial/0Jti61758182944.png",
+  },
+  {
+    quote: "I do not like ghee, but my father really loves it. He said this ghee is the best he has ever had.",
+    name: "Shahriar Khan Abir",
+    role: "Service Holder",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+  },
+  {
+    quote: "Honey quality was fresh and packaging was neat. Delivery timing and support were also very good.",
+    name: "Sultana Yesmin",
+    role: "Housewife",
+    avatar: "https://backoffice.ghorerbazar.com/testimonial/0Jti61758182944.png",
+  },
+  {
+    quote: "Dates and mango both were exactly as shown. Family liked the taste and I will order again.",
+    name: "Naimur Rahman",
+    role: "Private Service",
+    avatar: "",
+  },
+  {
+    quote: "মসলা আর মধু নিয়েছিলাম। দাম অনুযায়ী কোয়ালিটি ভালো, আর প্যাকেটিংও সুন্দর ছিল।",
+    name: "Nusrat Jahan",
+    role: "Teacher",
+    avatar: "",
+  },
+];
+
 const menuItems = [
   { title: "Combos" },
   { title: "Offer Zone" },
@@ -542,7 +581,6 @@ export default function HomePage() {
           onLoadMore={() => setShowAllJustForYou(true)}
         />
 
-        <SearchPanel results={searchResults} catalog={storeCatalog} activeCategory={activeCategory} query={query} setQuery={setQuery} setActiveCategory={setActiveCategory} onAdd={addToCart} onDetails={openDetails} />
         <Testimonials />
         <Footer onModal={setModal} onCategory={jumpToCategory} />
       </main>
@@ -1037,15 +1075,34 @@ function PromoBanner() {
 
 function Testimonials() {
   return (
-    <section className="pt-10 lg:pt-16">
-      <div className="rounded-[18px] border border-[#d7d7d7] bg-white px-6 py-7 text-[#666] lg:px-12 lg:py-12">
-        <p className="text-lg leading-9 lg:text-2xl">Thanks Ghorerbazar for free Honeyraj. Of course, I got it for being a regular customer.</p>
-        <div className="mt-7 flex items-center gap-4">
-          <img className="h-[62px] w-[62px] rounded-full object-cover" src="https://backoffice.ghorerbazar.com/testimonial/0Jti61758182944.png" alt="Sultana Yesmin" />
-          <div><h3 className="text-lg font-semibold text-brand-ink">Sultana Yesmin</h3><p>Housewife</p></div>
-        </div>
-      </div>
-      <SliderDots className="mt-7 justify-center" />
+    <section className="pt-10 lg:pt-14">
+      <SlidingRail
+        items={testimonials}
+        mobileItemsPerPage={1}
+        desktopItemsPerPage={3}
+        itemClassName="w-full min-w-full sm:w-[82%] sm:min-w-[82%] lg:w-[377px] lg:min-w-[377px]"
+        trackClassName="gap-4 lg:gap-6"
+        autoplay
+        arrowTopClassName="top-[116px]"
+        renderItem={(testimonial) => (
+          <article key={`${testimonial.name}-${testimonial.role}`} className="flex h-[231px] flex-col rounded-[18px] border border-[#d7d7d7] bg-white px-6 py-7 text-[#666] lg:h-[231px] lg:w-[377px]">
+            <p className="line-clamp-3 text-[16px] leading-8">{testimonial.quote}</p>
+            <div className="mt-auto flex items-center gap-4">
+              {testimonial.avatar ? (
+                <img className="h-[62px] w-[62px] rounded-full object-cover" src={testimonial.avatar} alt={testimonial.name} />
+              ) : (
+                <span className="grid h-[62px] w-[62px] place-items-center rounded-full bg-[#e5e7eb] text-[#777]">
+                  <UserRound className="h-9 w-9" />
+                </span>
+              )}
+              <div>
+                <h3 className="text-[16px] font-semibold text-brand-ink">{testimonial.name}</h3>
+                <p className="mt-1 text-[14px]">{testimonial.role}</p>
+              </div>
+            </div>
+          </article>
+        )}
+      />
     </section>
   );
 }
