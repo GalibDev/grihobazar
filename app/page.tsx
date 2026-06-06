@@ -885,7 +885,7 @@ function TopSellingCard({ product, quantity, wished, onAdd, onQuantity, onDetail
             </div>
           ) : (
             <>
-              <button type="button" onClick={() => onAdd(product)} className="flex h-[60px] items-center justify-center gap-2 rounded border border-brand-orange text-[18px] font-bold leading-tight text-brand-orange">
+              <button type="button" onClick={() => onAdd(product)} className="flex h-[60px] items-center justify-center gap-2 rounded border border-brand-orange text-[18px] font-bold leading-tight text-brand-orange transition-colors hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none">
                 <ShoppingCart className="h-5 w-5" /> <span>Add To<br />Cart</span>
               </button>
               <button type="button" onClick={() => onBuy(product)} className="flex h-[60px] items-center justify-center gap-2 rounded bg-brand-orange text-[18px] font-bold leading-tight text-white">
@@ -902,12 +902,12 @@ function TopSellingCard({ product, quantity, wished, onAdd, onQuantity, onDetail
 function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, onBuy, onWishlist }: { product: Product; quantity: number; wished: boolean; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
   const disabled = product.stock === "out";
   return (
-    <article className="relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white lg:h-[332px] lg:min-h-[332px]">
+    <article className="relative flex h-full min-h-[380px] flex-col overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white lg:h-[352px] lg:min-h-[352px]">
       {product.badge ? <Badge label={product.badge} tone={product.badgeTone} /> : null}
       <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-3 top-3 z-[1] grid h-8 w-8 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
         <Heart className={wished ? "h-4 w-4 fill-current" : "h-4 w-4"} />
       </button>
-      <button type="button" onClick={() => onDetails(product)} className="group grid h-[190px] w-full shrink-0 place-items-center overflow-hidden p-3 lg:h-[174px] lg:p-5">
+      <button type="button" onClick={() => onDetails(product)} className="group grid h-[210px] w-full shrink-0 place-items-center overflow-hidden p-3 lg:h-[210px] lg:p-5">
         <img className="max-h-full max-w-full object-contain transition-transform duration-300 ease-out group-hover:scale-110 group-focus-visible:scale-110" src={product.image} alt={product.title} />
       </button>
       <div className="flex min-h-0 flex-1 flex-col px-3 pb-3 lg:px-3 lg:pb-3">
@@ -925,7 +925,7 @@ function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, 
             <QuantityControl quantity={quantity} onMinus={() => onQuantity(product, quantity - 1)} onPlus={() => onQuantity(product, quantity + 1)} />
           </div>
         ) : (
-          <button type="button" onClick={() => onAdd(product)} className="mt-auto flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-semibold text-brand-orange lg:h-[45px] lg:text-[16px]">
+          <button type="button" onClick={() => onAdd(product)} className="mt-auto flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-semibold text-brand-orange transition-colors hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none lg:h-[45px] lg:text-[16px]">
             <ShoppingCart className="h-5 w-5" /> Add To Cart
           </button>
         )}
@@ -974,7 +974,7 @@ function ComboCard({ product, onDetails, onAdd }: { product: Product; onDetails:
           <span className="text-sm text-[#8b8b8b] line-through">{product.oldPrice ? formatPrice(product.oldPrice) : ""}</span>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <button type="button" onClick={() => onDetails(product)} className="h-11 rounded border border-brand-orange text-sm font-semibold text-brand-orange">Details</button>
+          <button type="button" onClick={() => onDetails(product)} className="h-11 rounded border border-brand-orange text-sm font-semibold text-brand-orange transition-colors hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none">Details</button>
           <button type="button" onClick={() => onAdd(product)} className="h-11 rounded bg-brand-orange text-sm font-semibold text-white">Add</button>
         </div>
       </div>

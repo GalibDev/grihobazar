@@ -203,10 +203,10 @@ function FilterPanel({ title, children }: { title: string; children: ReactNode }
 function CollectionProductCard({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
   return (
-    <article className="relative flex min-h-[360px] flex-col overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white xl:h-[332px] xl:min-h-[332px]">
+    <article className="relative flex min-h-[380px] flex-col overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white xl:h-[352px] xl:min-h-[352px]">
       {product.badge ? <span className="absolute right-3 top-4 z-[1] rounded bg-[#35c486] px-2 py-1 text-xs font-semibold text-white">{product.badge}</span> : null}
       <Link href={`/products/${product.id}`} className="block">
-        <div className="group grid h-[190px] place-items-center overflow-hidden p-4 xl:h-[174px] xl:p-5">
+        <div className="group grid h-[210px] place-items-center overflow-hidden p-4 xl:h-[210px] xl:p-5">
           <img className="max-h-full max-w-full object-contain transition-transform duration-300 ease-out group-hover:scale-110 group-focus-within:scale-110" src={product.image} alt={product.title} />
         </div>
         <h2 className="min-h-[48px] overflow-hidden px-3 text-[16px] font-normal leading-[1.35] text-[#020101] xl:min-h-[44px] xl:text-[16px]">{product.title}</h2>
@@ -216,7 +216,7 @@ function CollectionProductCard({ product }: { product: Product }) {
         {product.oldPrice ? <span className="text-[15px] text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
       </div>
       <div className="mt-auto p-3">
-        <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="inline-flex h-[45px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-semibold text-brand-orange">
+        <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="inline-flex h-[45px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-semibold text-brand-orange transition-colors hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none">
           <ShoppingCart className="h-5 w-5" />
           {added ? "Added" : "Add To Cart"}
         </button>

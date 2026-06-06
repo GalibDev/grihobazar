@@ -218,10 +218,10 @@ function ReviewBox() {
 function RelatedProductCard({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
   return (
-    <article className="relative flex min-h-[360px] flex-col rounded-[5px] border border-[#d7d7d7] bg-white p-3 lg:h-[332px] lg:min-h-[332px]">
+    <article className="relative flex min-h-[380px] flex-col rounded-[5px] border border-[#d7d7d7] bg-white p-3 lg:h-[352px] lg:min-h-[352px]">
       {product.badge ? <span className="absolute right-3 top-4 rounded bg-[#35c486] px-2 py-1 text-xs font-semibold text-white">{product.badge}</span> : null}
       <Link href={`/products/${product.id}`} className="block">
-        <div className="group grid h-[190px] place-items-center overflow-hidden p-4 lg:h-[162px]">
+        <div className="group grid h-[210px] place-items-center overflow-hidden p-4 lg:h-[198px]">
           <img className="max-h-full max-w-full object-contain transition-transform duration-300 ease-out group-hover:scale-110 group-focus-within:scale-110" src={product.image} alt={product.title} />
         </div>
         <h3 className="min-h-[48px] overflow-hidden text-[16px] font-normal leading-[1.35] text-[#020101] lg:min-h-[44px] lg:text-[16px]">{product.title}</h3>
@@ -230,7 +230,7 @@ function RelatedProductCard({ product }: { product: Product }) {
         <strong className="text-[19px] font-bold text-brand-orange">{formatPrice(product.price)}</strong>
         {product.oldPrice ? <span className="text-[15px] text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
       </div>
-      <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="mt-auto inline-flex h-[45px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-semibold text-brand-orange">
+      <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="mt-auto inline-flex h-[45px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-semibold text-brand-orange transition-colors hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none">
         <ShoppingCart className="h-5 w-5" />
         {added ? "Added" : "Add To Cart"}
       </button>
