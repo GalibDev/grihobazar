@@ -864,8 +864,8 @@ function TopSellingCard({ product, quantity, wished, onAdd, onQuantity, onDetail
       <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-4 top-4 z-[1] grid h-9 w-9 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
         <Heart className={wished ? "h-5 w-5 fill-current" : "h-5 w-5"} />
       </button>
-      <button type="button" onClick={() => onDetails(product)} className="grid h-[220px] place-items-center p-5 lg:h-full lg:p-8">
-        <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
+      <button type="button" onClick={() => onDetails(product)} className="group grid h-[220px] place-items-center overflow-hidden p-5 lg:h-full lg:p-8">
+        <img className="max-h-full max-w-full object-contain transition-transform duration-300 ease-out group-hover:scale-110 group-focus-visible:scale-110" src={product.image} alt={product.title} />
       </button>
       <div className="grid content-center px-5 pb-5 lg:px-5 lg:pb-0 lg:pr-6">
         <button type="button" onClick={() => onDetails(product)} className="block text-left">
@@ -907,8 +907,8 @@ function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, 
       <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-3 top-3 z-[1] grid h-8 w-8 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
         <Heart className={wished ? "h-4 w-4 fill-current" : "h-4 w-4"} />
       </button>
-      <button type="button" onClick={() => onDetails(product)} className="grid h-[190px] w-full shrink-0 place-items-center p-3 lg:h-[174px] lg:p-5">
-        <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
+      <button type="button" onClick={() => onDetails(product)} className="group grid h-[190px] w-full shrink-0 place-items-center overflow-hidden p-3 lg:h-[174px] lg:p-5">
+        <img className="max-h-full max-w-full object-contain transition-transform duration-300 ease-out group-hover:scale-110 group-focus-visible:scale-110" src={product.image} alt={product.title} />
       </button>
       <div className="flex min-h-0 flex-1 flex-col px-3 pb-3 lg:px-3 lg:pb-3">
         <button type="button" onClick={() => onDetails(product)} className="block text-left">
