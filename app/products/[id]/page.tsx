@@ -224,13 +224,13 @@ function RelatedProductCard({ product }: { product: Product }) {
         <div className="group grid h-[190px] place-items-center overflow-hidden p-4 lg:h-[162px]">
           <img className="max-h-full max-w-full object-contain transition-transform duration-300 ease-out group-hover:scale-110 group-focus-within:scale-110" src={product.image} alt={product.title} />
         </div>
-        <h3 className="min-h-[48px] overflow-hidden text-[18px] font-medium leading-tight lg:min-h-[46px] lg:text-[20px]">{product.title}</h3>
+        <h3 className="min-h-[48px] overflow-hidden text-[16px] font-normal leading-[1.35] text-[#020101] lg:min-h-[44px] lg:text-[16px]">{product.title}</h3>
       </Link>
       <div className="mt-2 flex items-center gap-2">
-        <strong className="text-[22px] font-extrabold text-brand-orange">{formatPrice(product.price)}</strong>
-        {product.oldPrice ? <span className="text-base text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
+        <strong className="text-[19px] font-bold text-brand-orange">{formatPrice(product.price)}</strong>
+        {product.oldPrice ? <span className="text-[15px] text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
       </div>
-      <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="mt-auto inline-flex h-[45px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-bold text-brand-orange">
+      <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="mt-auto inline-flex h-[45px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-semibold text-brand-orange">
         <ShoppingCart className="h-5 w-5" />
         {added ? "Added" : "Add To Cart"}
       </button>

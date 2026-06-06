@@ -912,11 +912,11 @@ function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, 
       </button>
       <div className="flex min-h-0 flex-1 flex-col px-3 pb-3 lg:px-3 lg:pb-3">
         <button type="button" onClick={() => onDetails(product)} className="block text-left">
-          <h3 className="min-h-[48px] overflow-hidden text-[17px] font-semibold leading-[1.16] text-brand-ink lg:min-h-[46px] lg:text-[20px]">{product.title}</h3>
+          <h3 className="min-h-[48px] overflow-hidden text-[16px] font-normal leading-[1.35] text-[#020101] lg:min-h-[44px] lg:text-[16px]">{product.title}</h3>
         </button>
         <div className="mb-3 mt-2 flex flex-wrap items-center gap-2">
-          <strong className="text-[20px] font-extrabold text-brand-orange lg:text-[22px]">{formatPrice(product.price)}</strong>
-          {product.oldPrice ? <span className="text-base text-[#8b8b8b] line-through lg:text-[16px]">{formatPrice(product.oldPrice)}</span> : null}
+          <strong className="text-[20px] font-bold text-brand-orange lg:text-[19px]">{formatPrice(product.price)}</strong>
+          {product.oldPrice ? <span className="text-[15px] text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
         </div>
         {disabled ? (
           <button type="button" disabled className="mt-auto h-11 w-full rounded bg-[#9ca3af] text-base font-bold text-white">Stock Out</button>
@@ -925,7 +925,7 @@ function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, 
             <QuantityControl quantity={quantity} onMinus={() => onQuantity(product, quantity - 1)} onPlus={() => onQuantity(product, quantity + 1)} />
           </div>
         ) : (
-          <button type="button" onClick={() => onAdd(product)} className="mt-auto flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-bold text-brand-orange lg:h-[45px] lg:text-[16px]">
+          <button type="button" onClick={() => onAdd(product)} className="mt-auto flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-semibold text-brand-orange lg:h-[45px] lg:text-[16px]">
             <ShoppingCart className="h-5 w-5" /> Add To Cart
           </button>
         )}
