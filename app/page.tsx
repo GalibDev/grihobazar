@@ -866,6 +866,7 @@ function JustForYouGrid(props: ProductActions & { products: Product[] }) {
           key={product.id}
           product={product}
           tall
+          justForYou
           quantity={props.cart[product.id]?.quantity ?? 0}
           wished={Boolean(props.wishlist[product.id])}
           onAdd={props.onAdd}
@@ -960,10 +961,10 @@ function TopSellingCard({ product, quantity, wished, onAdd, onQuantity, onDetail
   );
 }
 
-function ProductCard({ product, quantity, wished, organicCertified = false, tall = false, onAdd, onQuantity, onDetails, onBuy, onWishlist }: { product: Product; quantity: number; wished: boolean; organicCertified?: boolean; tall?: boolean; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
+function ProductCard({ product, quantity, wished, organicCertified = false, tall = false, justForYou = false, onAdd, onQuantity, onDetails, onBuy, onWishlist }: { product: Product; quantity: number; wished: boolean; organicCertified?: boolean; tall?: boolean; justForYou?: boolean; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
   const disabled = product.stock === "out";
   return (
-    <article className={`relative flex h-full min-h-[380px] flex-col overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white ${organicCertified || tall ? "lg:h-[373px] lg:min-h-[373px]" : "lg:h-[352px] lg:min-h-[352px]"}`}>
+    <article className={`relative flex h-full min-h-[380px] flex-col overflow-hidden rounded-[5px] border bg-white ${justForYou ? "border-[#cccccc] font-openSans" : "border-[#d7d7d7]"} ${organicCertified || tall ? "lg:h-[373px] lg:min-h-[373px]" : "lg:h-[352px] lg:min-h-[352px]"}`}>
       {product.badge ? <Badge label={product.badge} tone={product.badgeTone} /> : null}
       <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-3 top-3 z-[1] grid h-8 w-8 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
         <Heart className={wished ? "h-4 w-4 fill-current" : "h-4 w-4"} />
@@ -973,11 +974,11 @@ function ProductCard({ product, quantity, wished, organicCertified = false, tall
       </button>
       <div className="flex min-h-0 flex-1 flex-col px-3 pb-3 lg:px-3 lg:pb-3">
         <button type="button" onClick={() => onDetails(product)} className="block text-left">
-          <h3 className="min-h-[48px] overflow-hidden text-[16px] font-normal leading-[1.35] text-[#020101] lg:min-h-[44px] lg:text-[16px]">{product.title}</h3>
+          <h3 className={`min-h-[48px] overflow-hidden font-normal ${justForYou ? "text-[20px] leading-[1.15] text-[#222831] lg:min-h-[58px] lg:text-[20px]" : "text-[16px] leading-[1.35] text-[#020101] lg:min-h-[44px] lg:text-[16px]"}`}>{product.title}</h3>
         </button>
         <div className="mb-3 mt-2 flex flex-wrap items-center gap-2">
-          <strong className="text-[20px] font-bold text-brand-orange lg:text-[19px]">{formatPrice(product.price)}</strong>
-          {product.oldPrice ? <span className="text-[15px] text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
+          <strong className={`font-bold text-brand-orange ${justForYou ? "text-[20px]" : "text-[20px] lg:text-[19px]"}`}>{formatPrice(product.price)}</strong>
+          {product.oldPrice ? <span className={`${justForYou ? "text-[16px] text-[#9a9a9a]" : "text-[15px] text-[#9a9a9a]"} line-through`}>{formatPrice(product.oldPrice)}</span> : null}
         </div>
         {disabled ? (
           <button type="button" disabled className="mt-auto h-11 w-full rounded bg-[#9ca3af] text-base font-bold text-white">Stock Out</button>
@@ -986,7 +987,7 @@ function ProductCard({ product, quantity, wished, organicCertified = false, tall
             <QuantityControl quantity={quantity} onMinus={() => onQuantity(product, quantity - 1)} onPlus={() => onQuantity(product, quantity + 1)} />
           </div>
         ) : (
-          <button type="button" onClick={() => onAdd(product)} className="mt-auto flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-semibold text-brand-orange transition-colors hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none lg:h-[45px] lg:text-[16px]">
+          <button type="button" onClick={() => onAdd(product)} className={`mt-auto flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange font-semibold text-brand-orange transition-colors hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none lg:h-[45px] ${justForYou ? "text-[16px]" : "text-base lg:text-[16px]"}`}>
             <ShoppingCart className="h-5 w-5" /> Add To Cart
           </button>
         )}

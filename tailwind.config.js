@@ -12,6 +12,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["var(--font-poppins)", "Arial", "sans-serif"],
+        openSans: ["var(--font-open-sans)", "Arial", "sans-serif"],
       },
       boxShadow: {
         soft: "0 8px 28px rgba(19, 31, 42, 0.04)",
