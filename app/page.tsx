@@ -475,7 +475,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="relative mx-auto min-h-screen w-full max-w-[430px] overflow-x-hidden bg-brand-paper shadow-[0_0_0_1px_rgba(0,0,0,0.04)] lg:max-w-none lg:shadow-none">
+    <div className="relative mx-auto min-h-screen w-full max-w-[430px] overflow-x-hidden bg-brand-paper shadow-[0_0_0_1px_rgba(0,0,0,0.04)] lg:max-w-none lg:overflow-visible lg:shadow-none">
       <header className="sticky top-0 z-10 grid h-[70px] grid-cols-[64px_1fr_64px] items-center border-b border-[#ececec] bg-white lg:hidden">
         <IconButton label="Open menu" onClick={() => setMenuOpen(true)}><Menu className="h-[34px] w-[34px]" /></IconButton>
         <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
