@@ -19,6 +19,24 @@ export type Category = {
   slug: string;
 };
 
+export type Banner = {
+  id: string;
+  title: string;
+  image: string;
+  mobileImage?: string;
+  category: string;
+  active: boolean;
+};
+
+export type StoreSettings = {
+  insideDhakaDelivery: number;
+  outsideDhakaDelivery: number;
+  pickupDelivery: number;
+  bkashNumber: string;
+  nagadNumber: string;
+  whatsappNumber: string;
+};
+
 export type OrderItem = {
   productId: string;
   title: string;
@@ -31,9 +49,11 @@ export type Order = {
   customerName: string;
   phone: string;
   address: string;
+  note?: string;
   status: "pending" | "confirmed" | "delivered" | "cancelled";
   paymentMethod: "cash" | "bkash" | "nagad" | "card";
   paymentStatus: "unpaid" | "paid" | "failed";
+  paymentTransactionId?: string;
   deliveryCharge: number;
   trackingCode: string;
   items: OrderItem[];
@@ -44,5 +64,7 @@ export type Order = {
 export type StoreData = {
   products: Product[];
   categories: Category[];
+  banners: Banner[];
+  settings: StoreSettings;
   orders: Order[];
 };

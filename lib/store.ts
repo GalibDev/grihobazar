@@ -1,7 +1,7 @@
 import Database from "better-sqlite3";
 import { mkdirSync } from "fs";
 import path from "path";
-import type { Category, Order, OrderItem, Product, StoreData } from "./types";
+import type { Banner, Category, Order, OrderItem, Product, StoreData, StoreSettings } from "./types";
 
 const dataDir = path.join(process.cwd(), "data");
 const dbFile = path.join(dataDir, "grihobazar.db");
@@ -22,6 +22,42 @@ const categories: Category[] = [
   { title: "Flours & Lentils", slug: "flours-lentils", image: "https://backoffice.ghorerbazar.com/productImages/XA6LK1767439665.jpg" },
 ];
 
+const banners: Banner[] = [
+  {
+    id: "mango-hero",
+    title: "Mango offer",
+    image: "https://backoffice.ghorerbazar.com/banner/hSjx41780379939-dark-1000x400.png",
+    mobileImage: "https://backoffice.ghorerbazar.com/banner/Gcahd1780379939-dark-500x280.png",
+    category: "Mango",
+    active: true,
+  },
+  {
+    id: "dates-hero",
+    title: "Dates collection",
+    image: "https://backoffice.ghorerbazar.com/banner/sCUkg1774768074-dark.png",
+    mobileImage: "https://backoffice.ghorerbazar.com/banner/I2Vto1774768074-dark.png",
+    category: "Dates",
+    active: true,
+  },
+  {
+    id: "honey-hero",
+    title: "Honey collection",
+    image: "https://backoffice.ghorerbazar.com/banner/wvLKI1771837751.jpeg",
+    mobileImage: "https://backoffice.ghorerbazar.com/banner/3ANBj1767529509.jpg",
+    category: "Honey",
+    active: true,
+  },
+];
+
+const defaultSettings: StoreSettings = {
+  insideDhakaDelivery: 80,
+  outsideDhakaDelivery: 130,
+  pickupDelivery: 0,
+  bkashNumber: "01XXXXXXXXX",
+  nagadNumber: "01XXXXXXXXX",
+  whatsappNumber: "8809642922922",
+};
+
 const products: Product[] = [
   { id: "sundarban-honey-1kg", title: "Sundarban Honey 1kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/CvT2N1767414529.jpg", price: 2300, oldPrice: 2500, badge: "Save Tk 200", badgeTone: "green", featured: true, stock: "in" },
   { id: "gawa-ghee-1kg", title: "Gawa Ghee 1kg", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/VvzII1767097227.jpg", price: 1800, badge: "Best Selling", badgeTone: "red", featured: true, stock: "in" },
@@ -37,6 +73,7 @@ const products: Product[] = [
 
 type ProductRow = Omit<Product, "featured"> & { featured: 0 | 1 };
 type OrderRow = Omit<Order, "items"> & { items: string };
+type BannerRow = Omit<Banner, "active"> & { active: 0 | 1 };
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS products (
@@ -63,18 +100,48 @@ db.exec(`
     customerName TEXT NOT NULL,
     phone TEXT NOT NULL,
     address TEXT NOT NULL,
+    note TEXT,
     status TEXT NOT NULL,
     paymentMethod TEXT NOT NULL,
     paymentStatus TEXT NOT NULL,
+    paymentTransactionId TEXT,
     deliveryCharge INTEGER NOT NULL,
     trackingCode TEXT NOT NULL,
     items TEXT NOT NULL,
     total INTEGER NOT NULL,
     createdAt TEXT NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS banners (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    image TEXT NOT NULL,
+    mobileImage TEXT,
+    category TEXT NOT NULL,
+    active INTEGER DEFAULT 1
+  );
+
+  CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+  );
 `);
 
+migrateDatabase();
+
 seedDatabase();
+
+function migrateDatabase() {
+  const orderColumns = db.prepare("PRAGMA table_info(orders)").all() as Array<{ name: string }>;
+  const orderColumnNames = new Set(orderColumns.map((column) => column.name));
+
+  if (!orderColumnNames.has("note")) {
+    db.prepare("ALTER TABLE orders ADD COLUMN note TEXT").run();
+  }
+  if (!orderColumnNames.has("paymentTransactionId")) {
+    db.prepare("ALTER TABLE orders ADD COLUMN paymentTransactionId TEXT").run();
+  }
+}
 
 function toProductRecord(item: Product) {
   return {
@@ -97,9 +164,11 @@ function toOrderRecord(item: Order) {
     customerName: item.customerName,
     phone: item.phone,
     address: item.address,
+    note: item.note ?? null,
     status: item.status,
     paymentMethod: item.paymentMethod ?? "cash",
     paymentStatus: item.paymentStatus ?? "unpaid",
+    paymentTransactionId: item.paymentTransactionId ?? null,
     deliveryCharge: item.deliveryCharge ?? 0,
     trackingCode: item.trackingCode ?? item.id,
     items: JSON.stringify(item.items),
@@ -108,9 +177,22 @@ function toOrderRecord(item: Order) {
   };
 }
 
+function toBannerRecord(item: Banner) {
+  return {
+    id: item.id,
+    title: item.title,
+    image: item.image,
+    mobileImage: item.mobileImage ?? null,
+    category: item.category,
+    active: item.active ? 1 : 0,
+  };
+}
+
 function seedDatabase() {
   const productCount = db.prepare("SELECT COUNT(*) as count FROM products").get() as { count: number };
   const categoryCount = db.prepare("SELECT COUNT(*) as count FROM categories").get() as { count: number };
+  const bannerCount = db.prepare("SELECT COUNT(*) as count FROM banners").get() as { count: number };
+  const settingsCount = db.prepare("SELECT COUNT(*) as count FROM settings").get() as { count: number };
 
   if (categoryCount.count === 0) {
     const insertCategory = db.prepare("INSERT INTO categories (slug, title, image) VALUES (@slug, @title, @image)");
@@ -127,6 +209,20 @@ function seedDatabase() {
       items.forEach((item) => insertProduct.run(toProductRecord(item)));
     });
     insertMany(products);
+  }
+
+  if (bannerCount.count === 0) {
+    const insertBanner = db.prepare("INSERT INTO banners (id, title, image, mobileImage, category, active) VALUES (@id, @title, @image, @mobileImage, @category, @active)");
+    const insertMany = db.transaction((items: Banner[]) => items.forEach((item) => insertBanner.run(toBannerRecord(item))));
+    insertMany(banners);
+  }
+
+  if (settingsCount.count === 0) {
+    const insertSetting = db.prepare("INSERT INTO settings (key, value) VALUES (?, ?)");
+    const insertMany = db.transaction((settings: StoreSettings) => {
+      Object.entries(settings).forEach(([key, value]) => insertSetting.run(key, String(value)));
+    });
+    insertMany(defaultSettings);
   }
 }
 
@@ -151,14 +247,40 @@ function mapOrder(row: OrderRow): Order {
   };
 }
 
+function mapBanner(row: BannerRow): Banner {
+  return {
+    ...row,
+    mobileImage: row.mobileImage ?? undefined,
+    active: Boolean(row.active),
+  };
+}
+
+function readSettings(): StoreSettings {
+  const rows = db.prepare("SELECT key, value FROM settings").all() as Array<{ key: keyof StoreSettings; value: string }>;
+  const settings = { ...defaultSettings };
+
+  rows.forEach((row) => {
+    if (row.key === "insideDhakaDelivery" || row.key === "outsideDhakaDelivery" || row.key === "pickupDelivery") {
+      settings[row.key] = Number(row.value) as never;
+    } else {
+      settings[row.key] = row.value as never;
+    }
+  });
+
+  return settings;
+}
+
 export async function readStore(): Promise<StoreData> {
   const productRows = db.prepare("SELECT * FROM products ORDER BY rowid DESC").all() as ProductRow[];
   const categoryRows = db.prepare("SELECT * FROM categories ORDER BY rowid ASC").all() as Category[];
+  const bannerRows = db.prepare("SELECT * FROM banners ORDER BY rowid ASC").all() as BannerRow[];
   const orderRows = db.prepare("SELECT * FROM orders ORDER BY createdAt DESC").all() as OrderRow[];
 
   return {
     products: productRows.map(mapProduct),
     categories: categoryRows,
+    banners: bannerRows.map(mapBanner),
+    settings: readSettings(),
     orders: orderRows.map(mapOrder),
   };
 }
@@ -167,6 +289,8 @@ export async function writeStore(data: StoreData) {
   const replace = db.transaction((nextData: StoreData) => {
     db.prepare("DELETE FROM products").run();
     db.prepare("DELETE FROM categories").run();
+    db.prepare("DELETE FROM banners").run();
+    db.prepare("DELETE FROM settings").run();
     db.prepare("DELETE FROM orders").run();
 
     const insertProduct = db.prepare(`
@@ -174,13 +298,17 @@ export async function writeStore(data: StoreData) {
       VALUES (@id, @title, @category, @image, @price, @oldPrice, @badge, @badgeTone, @stock, @featured)
     `);
     const insertCategory = db.prepare("INSERT INTO categories (slug, title, image) VALUES (@slug, @title, @image)");
+    const insertBanner = db.prepare("INSERT INTO banners (id, title, image, mobileImage, category, active) VALUES (@id, @title, @image, @mobileImage, @category, @active)");
+    const insertSetting = db.prepare("INSERT INTO settings (key, value) VALUES (?, ?)");
     const insertOrder = db.prepare(`
-      INSERT INTO orders (id, customerName, phone, address, status, paymentMethod, paymentStatus, deliveryCharge, trackingCode, items, total, createdAt)
-      VALUES (@id, @customerName, @phone, @address, @status, @paymentMethod, @paymentStatus, @deliveryCharge, @trackingCode, @items, @total, @createdAt)
+      INSERT INTO orders (id, customerName, phone, address, note, status, paymentMethod, paymentStatus, paymentTransactionId, deliveryCharge, trackingCode, items, total, createdAt)
+      VALUES (@id, @customerName, @phone, @address, @note, @status, @paymentMethod, @paymentStatus, @paymentTransactionId, @deliveryCharge, @trackingCode, @items, @total, @createdAt)
     `);
 
     nextData.products.forEach((item) => insertProduct.run(toProductRecord(item)));
     nextData.categories.forEach((item) => insertCategory.run(item));
+    nextData.banners.forEach((item) => insertBanner.run(toBannerRecord(item)));
+    Object.entries(nextData.settings).forEach(([key, value]) => insertSetting.run(key, String(value)));
     nextData.orders.forEach((item) => insertOrder.run(toOrderRecord(item)));
   });
 

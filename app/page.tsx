@@ -30,6 +30,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
+import { readCart, writeCart } from "@/lib/cart-storage";
 
 type Product = {
   id: string;
@@ -411,12 +412,24 @@ export default function HomePage() {
       .catch(() => setStoreProducts(products));
   }, []);
 
+  useEffect(() => {
+    const savedCart = readCart();
+    if (savedCart.length) {
+      setCart(Object.fromEntries(savedCart.map((item) => [item.id, item])));
+    }
+  }, []);
+
   function addToCart(product: Product, quantity = 1) {
     if (product.stock === "out") return;
     setCart((current) => ({
       ...current,
       [product.id]: { ...product, quantity: (current[product.id]?.quantity ?? 0) + quantity },
     }));
+    const nextCart = {
+      ...cart,
+      [product.id]: { ...product, quantity: (cart[product.id]?.quantity ?? 0) + quantity },
+    };
+    writeCart(Object.values(nextCart));
     setCartOpen(true);
   }
 
@@ -428,6 +441,7 @@ export default function HomePage() {
       } else {
         next[product.id] = { ...product, quantity };
       }
+      writeCart(Object.values(next));
       return next;
     });
   }

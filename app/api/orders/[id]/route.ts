@@ -7,6 +7,22 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
+export async function GET(_request: Request, context: RouteContext) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await context.params;
+  const store = await readStore();
+  const order = store.orders.find((item) => item.id === id);
+
+  if (!order) {
+    return NextResponse.json({ message: "Order not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(order);
+}
+
 export async function PATCH(request: Request, context: RouteContext) {
   if (!(await requireAdmin())) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
