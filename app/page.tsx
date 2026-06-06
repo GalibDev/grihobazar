@@ -857,16 +857,17 @@ function ProductSection(props: { section: ProductSectionData; cart: Record<strin
   );
 }
 
-function ProductGrid(props: { products: Product[]; cart: Record<string, CartItem>; wishlist: Record<string, Product>; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
+function ProductGrid(props: { section?: ProductSectionData; products: Product[]; cart: Record<string, CartItem>; wishlist: Record<string, Product>; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
+  const isOrganicCertified = props.section?.title === "Organic Certified";
   return (
     <SlidingRail
       items={props.products}
       mobileItemsPerPage={2}
       desktopItemsPerPage={5}
-      itemClassName="w-[47%] min-w-[47%] lg:w-[219px] lg:min-w-[219px]"
+      itemClassName={`w-[47%] min-w-[47%] ${isOrganicCertified ? "lg:w-[223px] lg:min-w-[223px]" : "lg:w-[219px] lg:min-w-[219px]"}`}
       trackClassName="gap-4 pt-6 lg:gap-5"
       autoplay
-      renderItem={(product) => <ProductCard key={product.id} product={product} quantity={props.cart[product.id]?.quantity ?? 0} wished={Boolean(props.wishlist[product.id])} onAdd={props.onAdd} onQuantity={props.onQuantity} onDetails={props.onDetails} onBuy={props.onBuy} onWishlist={props.onWishlist} />}
+      renderItem={(product) => <ProductCard key={product.id} product={product} organicCertified={isOrganicCertified} quantity={props.cart[product.id]?.quantity ?? 0} wished={Boolean(props.wishlist[product.id])} onAdd={props.onAdd} onQuantity={props.onQuantity} onDetails={props.onDetails} onBuy={props.onBuy} onWishlist={props.onWishlist} />}
     />
   );
 }
@@ -937,10 +938,10 @@ function TopSellingCard({ product, quantity, wished, onAdd, onQuantity, onDetail
   );
 }
 
-function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, onBuy, onWishlist }: { product: Product; quantity: number; wished: boolean; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
+function ProductCard({ product, quantity, wished, organicCertified = false, onAdd, onQuantity, onDetails, onBuy, onWishlist }: { product: Product; quantity: number; wished: boolean; organicCertified?: boolean; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
   const disabled = product.stock === "out";
   return (
-    <article className="relative flex h-full min-h-[380px] flex-col overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white lg:h-[352px] lg:min-h-[352px]">
+    <article className={`relative flex h-full min-h-[380px] flex-col overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white ${organicCertified ? "lg:h-[373px] lg:min-h-[373px]" : "lg:h-[352px] lg:min-h-[352px]"}`}>
       {product.badge ? <Badge label={product.badge} tone={product.badgeTone} /> : null}
       <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-3 top-3 z-[1] grid h-8 w-8 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
         <Heart className={wished ? "h-4 w-4 fill-current" : "h-4 w-4"} />
