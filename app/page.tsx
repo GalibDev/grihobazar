@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import {
   ArrowLeft,
@@ -650,24 +650,118 @@ function Hero({ onCategory }: { onCategory: (category: string) => void }) {
   );
 }
 
-function FeaturedCategories({ onCategory }: { onCategory: (category: string) => void }) {
-  const [offset, setOffset] = useState(0);
-  const visibleCategories = [...categories.slice(offset), ...categories.slice(0, offset)];
-  const move = (direction: number) => setOffset((current) => (current + direction + categories.length) % categories.length);
+function SlidingRail<T,>({
+  items,
+  renderItem,
+  itemClassName,
+  trackClassName = "",
+  mobileItemsPerPage,
+  desktopItemsPerPage,
+  autoplay = false,
+  interval = 4800,
+  arrowTopClassName = "top-1/2",
+}: {
+  items: T[];
+  renderItem: (item: T, index: number) => ReactNode;
+  itemClassName: string;
+  trackClassName?: string;
+  mobileItemsPerPage: number;
+  desktopItemsPerPage: number;
+  autoplay?: boolean;
+  interval?: number;
+  arrowTopClassName?: string;
+}) {
+  const railRef = useRef<HTMLDivElement>(null);
+  const [activePage, setActivePage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(mobileItemsPerPage);
+  const pageCount = Math.max(1, Math.ceil(items.length / itemsPerPage));
 
+  useEffect(() => {
+    const updateItemsPerPage = () => setItemsPerPage(window.innerWidth >= 1024 ? desktopItemsPerPage : mobileItemsPerPage);
+    updateItemsPerPage();
+    window.addEventListener("resize", updateItemsPerPage);
+    return () => window.removeEventListener("resize", updateItemsPerPage);
+  }, [desktopItemsPerPage, mobileItemsPerPage]);
+
+  useEffect(() => {
+    if (activePage < pageCount) return;
+    setActivePage(pageCount - 1);
+  }, [activePage, pageCount]);
+
+  const scrollToPage = (page: number) => {
+    const nextPage = (page + pageCount) % pageCount;
+    const rail = railRef.current;
+    setActivePage(nextPage);
+    rail?.scrollTo({ left: nextPage * rail.clientWidth, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (!autoplay || pageCount < 2) return;
+    const timer = window.setInterval(() => {
+      setActivePage((current) => {
+        const nextPage = (current + 1) % pageCount;
+        const rail = railRef.current;
+        rail?.scrollTo({ left: nextPage * rail.clientWidth, behavior: "smooth" });
+        return nextPage;
+      });
+    }, interval);
+    return () => window.clearInterval(timer);
+  }, [autoplay, interval, pageCount]);
+
+  const handleScroll = () => {
+    const rail = railRef.current;
+    if (!rail?.clientWidth) return;
+    const nextPage = Math.min(pageCount - 1, Math.max(0, Math.round(rail.scrollLeft / rail.clientWidth)));
+    setActivePage(nextPage);
+  };
+
+  return (
+    <div className="relative">
+      {pageCount > 1 ? (
+        <>
+          <button type="button" onClick={() => scrollToPage(activePage - 1)} aria-label="Previous slide" className={`absolute -left-[18px] ${arrowTopClassName} z-[2] grid h-[34px] w-[34px] -translate-y-1/2 place-items-center rounded-full bg-brand-orange text-white shadow-soft lg:-left-5 lg:h-[46px] lg:w-[46px]`}>
+            <ChevronLeft className="h-[25px] w-[25px] lg:h-8 lg:w-8" />
+          </button>
+          <button type="button" onClick={() => scrollToPage(activePage + 1)} aria-label="Next slide" className={`absolute -right-[18px] ${arrowTopClassName} z-[2] grid h-[34px] w-[34px] -translate-y-1/2 place-items-center rounded-full bg-brand-orange text-white shadow-soft lg:-right-5 lg:h-[46px] lg:w-[46px]`}>
+            <ChevronRight className="h-[25px] w-[25px] lg:h-8 lg:w-8" />
+          </button>
+        </>
+      ) : null}
+      <div
+        ref={railRef}
+        onScroll={handleScroll}
+        className={`flex snap-x snap-mandatory overflow-x-auto scroll-smooth pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${trackClassName}`}
+      >
+        {items.map((item, index) => (
+          <div key={index} className={`shrink-0 snap-start ${itemClassName}`}>
+            {renderItem(item, index)}
+          </div>
+        ))}
+      </div>
+      {pageCount > 1 ? <SliderDots className="mt-7 justify-center" count={pageCount} active={activePage} onSelect={scrollToPage} /> : null}
+    </div>
+  );
+}
+
+function FeaturedCategories({ onCategory }: { onCategory: (category: string) => void }) {
   return (
     <section className="relative text-center">
       <h1 className="mb-[18px] mt-[18px] text-[25px] font-bold leading-tight lg:mb-12 lg:mt-8 lg:text-[34px]">Featured Categories</h1>
-      <button type="button" onClick={() => move(-1)} aria-label="Previous categories" className="absolute -left-[18px] top-[108px] z-[2] grid h-[34px] w-[34px] place-items-center rounded-full bg-brand-orange text-white lg:hidden"><ChevronLeft className="h-[25px] w-[25px]" /></button>
-      <button type="button" onClick={() => move(1)} aria-label="Next categories" className="absolute -right-[18px] top-[108px] z-[2] grid h-[34px] w-[34px] place-items-center rounded-full bg-brand-orange text-white lg:hidden"><ChevronRight className="h-[25px] w-[25px]" /></button>
-      <div className="grid grid-cols-3 gap-8 px-[21px] max-[360px]:gap-5 max-[360px]:px-[17px] lg:grid-cols-10 lg:gap-8 lg:px-8">
-        {visibleCategories.map((category) => (
+      <SlidingRail
+        items={categories}
+        mobileItemsPerPage={3}
+        desktopItemsPerPage={6}
+        itemClassName="w-[29%] min-w-[29%] sm:w-[22%] sm:min-w-[22%] lg:w-[15%] lg:min-w-[15%]"
+        trackClassName="gap-8 px-[21px] max-[360px]:gap-5 max-[360px]:px-[17px] lg:gap-8 lg:px-8"
+        autoplay
+        arrowTopClassName="top-[92px] lg:top-[95px]"
+        renderItem={(category) => (
           <button key={category.title} type="button" onClick={() => onCategory(category.title)} className="min-w-0 text-center">
             <img className="aspect-square w-full scale-[1.22] rounded-[18px] bg-white object-contain p-2.5 shadow-soft lg:scale-100 lg:p-5" src={category.image} alt={category.title} />
             <h2 className="mt-[13px] min-h-12 text-[clamp(16px,5.1vw,22px)] font-medium leading-[1.15] lg:text-[20px]">{category.title}</h2>
           </button>
-        ))}
-      </div>
+        )}
+      />
     </section>
   );
 }
@@ -676,14 +770,19 @@ function Brands({ onSeeAll }: { onSeeAll: () => void }) {
   return (
     <section className="pt-7 lg:pt-14">
       <SectionHeader title="Our Brands" action="SEE ALL" onAction={onSeeAll} />
-      <div className="grid grid-cols-2 gap-4 pt-4 lg:grid-cols-5 lg:gap-7 lg:pt-7">
-        {brands.map((brand) => (
+      <SlidingRail
+        items={brands}
+        mobileItemsPerPage={2}
+        desktopItemsPerPage={5}
+        itemClassName="w-[47%] min-w-[47%] lg:w-[18.8%] lg:min-w-[18.8%]"
+        trackClassName="gap-4 pt-4 lg:gap-7 lg:pt-7"
+        autoplay
+        renderItem={(brand) => (
           <div key={brand} className="grid h-[88px] place-items-center rounded-lg border border-[#dedede] bg-white lg:h-[150px]">
             <img className="max-h-[58px] max-w-[75%] object-contain lg:max-h-[86px]" src={brand} alt="Brand" />
           </div>
-        ))}
-      </div>
-      <SliderDots className="mt-6 justify-center" />
+        )}
+      />
     </section>
   );
 }
@@ -694,7 +793,6 @@ function ProductSection(props: { section: ProductSectionData; cart: Record<strin
     <section id={section.title === "Just For You" ? "products" : undefined} className="pt-8 lg:pt-14">
       <SectionHeader title={section.title} action={section.action} onAction={onAction} />
       <ProductGrid {...props} products={section.products} />
-      <SliderDots className="mt-7 justify-center" />
       {showLoadMore ? <button type="button" onClick={onLoadMore} className="mx-auto mt-8 block rounded-full border-2 border-brand-orange px-10 py-4 text-lg font-semibold text-brand-orange">LOAD MORE</button> : null}
     </section>
   );
@@ -702,9 +800,15 @@ function ProductSection(props: { section: ProductSectionData; cart: Record<strin
 
 function ProductGrid(props: { products: Product[]; cart: Record<string, CartItem>; wishlist: Record<string, Product>; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
   return (
-    <div className="grid grid-cols-2 gap-4 pt-6 lg:grid-cols-4 lg:gap-7">
-      {props.products.map((product) => <ProductCard key={product.id} product={product} quantity={props.cart[product.id]?.quantity ?? 0} wished={Boolean(props.wishlist[product.id])} onAdd={props.onAdd} onQuantity={props.onQuantity} onDetails={props.onDetails} onBuy={props.onBuy} onWishlist={props.onWishlist} />)}
-    </div>
+    <SlidingRail
+      items={props.products}
+      mobileItemsPerPage={2}
+      desktopItemsPerPage={5}
+      itemClassName="w-[47%] min-w-[47%] lg:w-[18.8%] lg:min-w-[18.8%]"
+      trackClassName="gap-4 pt-6 lg:gap-7"
+      autoplay
+      renderItem={(product) => <ProductCard key={product.id} product={product} quantity={props.cart[product.id]?.quantity ?? 0} wished={Boolean(props.wishlist[product.id])} onAdd={props.onAdd} onQuantity={props.onQuantity} onDetails={props.onDetails} onBuy={props.onBuy} onWishlist={props.onWishlist} />}
+    />
   );
 }
 
@@ -716,12 +820,12 @@ function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, 
       <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-3 top-3 z-[1] grid h-9 w-9 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
         <Heart className={wished ? "h-5 w-5 fill-current" : "h-5 w-5"} />
       </button>
-      <button type="button" onClick={() => onDetails(product)} className="grid h-[188px] w-full place-items-center p-4 lg:h-[270px] lg:p-8">
+      <button type="button" onClick={() => onDetails(product)} className="grid h-[220px] w-full place-items-center p-3 lg:h-[330px] lg:p-6">
         <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
       </button>
       <div className="px-3 pb-3 lg:px-5 lg:pb-5">
         <button type="button" onClick={() => onDetails(product)} className="block text-left">
-          <h3 className="min-h-[60px] text-[18px] font-semibold leading-[1.16] text-brand-ink lg:text-[24px]">{product.title}</h3>
+          <h3 className="min-h-[60px] text-[18px] font-semibold leading-[1.16] text-brand-ink lg:text-[22px]">{product.title}</h3>
         </button>
         <div className="mb-4 mt-3 flex flex-wrap items-center gap-2">
           <strong className="text-[20px] font-extrabold text-brand-orange lg:text-[26px]">{formatPrice(product.price)}</strong>
@@ -754,10 +858,15 @@ function ComboSection({ onDetails, onAdd }: { onDetails: (product: Product) => v
           View All Combos <ArrowRight className="h-4 w-4" />
         </button>
       </div>
-      <div className="grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-7">
-        {combos.map((combo) => <ComboCard key={combo.id} product={combo} onDetails={onDetails} onAdd={onAdd} />)}
-      </div>
-      <SliderDots className="mt-7 justify-center" />
+      <SlidingRail
+        items={combos}
+        mobileItemsPerPage={2}
+        desktopItemsPerPage={4}
+        itemClassName="w-[47%] min-w-[47%] lg:w-[23.1%] lg:min-w-[23.1%]"
+        trackClassName="gap-5 lg:gap-7"
+        autoplay
+        renderItem={(combo) => <ComboCard key={combo.id} product={combo} onDetails={onDetails} onAdd={onAdd} />}
+      />
     </section>
   );
 }
@@ -767,7 +876,7 @@ function ComboCard({ product, onDetails, onAdd }: { product: Product; onDetails:
     <article className="relative overflow-hidden rounded border border-[#d7d7d7] bg-white">
       <Badge label={product.badge ?? ""} tone="green" />
       <span className="absolute right-0 top-0 rounded-bl bg-brand-orange px-2 py-1 text-xs text-white">Combo Offer</span>
-      <button type="button" onClick={() => onDetails(product)} className="grid h-[180px] w-full place-items-center p-3 pt-8 lg:h-[245px]">
+      <button type="button" onClick={() => onDetails(product)} className="grid h-[200px] w-full place-items-center p-3 pt-8 lg:h-[290px]">
         <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
       </button>
       <div className="px-3 pb-3">
