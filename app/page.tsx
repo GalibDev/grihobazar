@@ -490,7 +490,7 @@ export default function HomePage() {
       <DesktopHeader cartCount={cartCount} onModal={setModal} onCart={() => setCartOpen(true)} query={query} setQuery={setQuery} />
       <DesktopNav onCategory={jumpToCategory} />
 
-      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1200px] lg:px-0 lg:pb-24 lg:pt-12 xl:w-[calc(100%-240px)]">
+      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1200px] lg:px-0 lg:pb-24 lg:pt-9 xl:w-[calc(100%-240px)]">
         <Hero onCategory={jumpToCategory} />
         <FeaturedCategories onCategory={jumpToCategory} />
 
@@ -745,7 +745,7 @@ function SlidingRail<T,>({
 function FeaturedCategories({ onCategory }: { onCategory: (category: string) => void }) {
   return (
     <section className="relative text-center">
-      <h1 className="mb-[18px] mt-[48px] text-[25px] font-bold leading-tight lg:mb-12 lg:mt-12 lg:text-[26px]">Featured Categories</h1>
+      <h1 className="mb-[18px] mt-[24px] text-[25px] font-bold leading-tight lg:mb-10 lg:mt-[26px] lg:text-[26px]">Featured Categories</h1>
       <SlidingRail
         items={categories}
         mobileItemsPerPage={3}
@@ -1292,7 +1292,7 @@ function Drawer({ menuOpen, setMenuOpen, onModal, onCategory, wishlistCount }: {
 
 function FloatingCart({ cartCount, cartTotal, onClick }: { cartCount: number; cartTotal: number; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="phone-edge-right fixed top-1/2 z-20 w-14 -translate-y-[20%] overflow-hidden rounded-l-[5px] bg-white shadow-float lg:w-[70px]">
+    <button type="button" onClick={onClick} className="phone-edge-right fixed top-[54%] z-20 w-14 -translate-y-1/2 overflow-hidden rounded-l-[5px] bg-white shadow-float lg:w-[70px]">
       <div className="grid h-[56px] place-items-center gap-0.5 bg-brand-orange px-1 py-2 text-[13px] leading-none text-white lg:text-sm">
         <ShoppingBag className="h-[21px] w-[21px] lg:h-5 lg:w-5" /><span>{cartCount} Items</span>
       </div>
