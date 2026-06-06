@@ -88,17 +88,17 @@ export function StorefrontHeader() {
       </header>
 
       <nav className="sticky top-0 z-30 bg-[#002c26] text-white">
-        <div className="mx-auto flex h-[65px] max-w-[1200px] items-center justify-between gap-4 overflow-x-auto px-0 text-[14px] font-medium [scrollbar-width:none] xl:w-[calc(100%-240px)] [&::-webkit-scrollbar]:hidden">
+        <div className="mx-auto flex h-[65px] max-w-[1200px] items-center justify-between gap-4 overflow-visible px-0 text-[14px] font-medium xl:w-[calc(100%-240px)]">
           {navItems.map((item) => (
             <div key={item.title} className="group relative flex h-full shrink-0 items-center">
-              <Link href={item.href} className="flex items-center gap-2 hover:text-brand-orange">
+              <Link href={item.href} className="flex h-full items-center gap-2 transition-colors hover:text-brand-orange group-hover:text-brand-orange focus-visible:text-brand-orange focus-visible:outline-none">
                 {item.title}
                 {item.children ? <ChevronDown className="h-3.5 w-3.5" /> : null}
               </Link>
               {item.children ? (
-                <div className="invisible fixed top-[135px] z-40 min-w-[260px] bg-white py-2 text-[14px] font-normal text-[#666] opacity-0 shadow-float transition group-hover:visible group-hover:opacity-100">
+                <div className="invisible absolute left-0 top-full z-40 min-w-[260px] bg-white py-2 text-[14px] font-normal text-[#666] opacity-0 shadow-float transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                   {item.children.map((child) => (
-                    <Link key={child} href={`/collections/${slugify(child)}`} className="block px-7 py-3 hover:bg-brand-orange hover:text-white">
+                    <Link key={child} href={`/collections/${slugify(child)}`} className="block px-7 py-3 hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none">
                       {child}
                     </Link>
                   ))}

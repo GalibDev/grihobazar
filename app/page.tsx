@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
+import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
@@ -55,6 +56,7 @@ type CartItem = Product & { quantity: number };
 type ModalType = "signin" | "track" | "wishlist" | "checkout" | "details" | "search" | "about" | null;
 
 const formatPrice = (price: number) => `৳${price.toLocaleString("en-US")}`;
+const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 const categories = [
   { title: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/category_images/Zf99g1774766372.png" },
@@ -308,20 +310,20 @@ const brands = [
 ];
 
 const menuItems = [
-  "Combos",
-  "Offer Zone",
-  "Mango",
-  "Honey",
-  "Oil & Ghee",
-  "Dates",
-  "Spices",
-  "Nuts & Seeds",
-  "Beverage",
-  "Rice",
-  "Flours & Lentils",
-  "Organic",
-  "Pickle",
-  "Tabaya",
+  { title: "Combos" },
+  { title: "Offer Zone" },
+  { title: "Mango" },
+  { title: "Honey", children: ["Sundarban Honey", "Black Seed Honey", "Lichu Flower Honey", "African Organic Honey", "Sidr Honey", "Honeycomb"] },
+  { title: "Oil & Ghee" },
+  { title: "Dates", children: ["Safawi/kalmi", "Medjool", "Sukkari", "Ajwa", "Mabroom"] },
+  { title: "Spices", children: ["Whole Spices", "Basic Spices", "Mixed Spices"] },
+  { title: "Nuts & Seeds", children: ["Nuts", "Seeds"] },
+  { title: "Beverage", children: ["Tea", "Coffee"] },
+  { title: "Rice" },
+  { title: "Flours & Lentils", children: ["Flours", "Lentils"] },
+  { title: "Organic" },
+  { title: "Pickle" },
+  { title: "Tabaya" },
 ];
 
 const heroSlides = [
@@ -584,12 +586,23 @@ function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCo
 function DesktopNav({ onCategory }: { onCategory: (category: string) => void }) {
   return (
     <nav className="sticky top-0 z-30 hidden bg-[#052925] text-white lg:block">
-      <div className="mx-auto flex h-[65px] max-w-[1200px] items-center justify-between gap-4 overflow-x-auto px-0">
-        {menuItems.map((label) => (
-          <button key={label} type="button" onClick={() => onCategory(label)} className="flex shrink-0 items-center gap-1 text-[14px] font-semibold leading-none">
-            <span>{label}</span>
-            {["Honey", "Dates", "Spices", "Nuts & Seeds", "Beverage", "Flours & Lentils"].includes(label) ? <ChevronRight className="h-3.5 w-3.5 shrink-0 rotate-90" /> : null}
-          </button>
+      <div className="mx-auto flex h-[65px] max-w-[1200px] items-center justify-between gap-4 overflow-visible px-0">
+        {menuItems.map((item) => (
+          <div key={item.title} className="group relative flex h-full shrink-0 items-center">
+            <button type="button" onClick={() => onCategory(item.title)} className="flex h-full items-center gap-1 text-[14px] font-semibold leading-none transition-colors hover:text-brand-orange group-hover:text-brand-orange focus-visible:text-brand-orange focus-visible:outline-none">
+              <span>{item.title}</span>
+              {item.children ? <ChevronRight className="h-3.5 w-3.5 shrink-0 rotate-90" /> : null}
+            </button>
+            {item.children ? (
+              <div className="invisible absolute left-0 top-full z-50 min-w-[260px] bg-white py-2 text-[14px] font-normal text-[#666] opacity-0 shadow-float transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                {item.children.map((child) => (
+                  <Link key={child} href={`/collections/${slugify(child)}`} className="block px-7 py-3 hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none">
+                    {child}
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+          </div>
         ))}
       </div>
     </nav>
@@ -1271,9 +1284,9 @@ function Drawer({ menuOpen, setMenuOpen, onModal, onCategory, wishlistCount }: {
           <div><strong className="block text-xl font-medium leading-none">Hello there!</strong><span className="block text-xl font-medium leading-none">Signin</span></div>
         </button>
         <div className="rounded-md bg-[#f5f5f5] px-[15px] py-[18px]">
-          {menuItems.map((label) => (
-            <button key={label} type="button" onClick={() => onCategory(label)} className="flex min-h-[36px] w-full items-center justify-between border-b border-[#d9d9d9] text-left text-base leading-none text-[#31363d] last:border-b-0">
-              {label}<ChevronRight className="h-5 w-5 text-[#777]" />
+          {menuItems.map((item) => (
+            <button key={item.title} type="button" onClick={() => onCategory(item.title)} className="flex min-h-[36px] w-full items-center justify-between border-b border-[#d9d9d9] text-left text-base leading-none text-[#31363d] last:border-b-0">
+              {item.title}<ChevronRight className="h-5 w-5 text-[#777]" />
             </button>
           ))}
         </div>
