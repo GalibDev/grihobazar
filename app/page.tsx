@@ -612,7 +612,7 @@ function Hero({ onCategory }: { onCategory: (category: string) => void }) {
   };
 
   return (
-    <section className="relative overflow-hidden rounded-[5px] bg-[#111] lg:grid lg:h-[390px] lg:grid-cols-[750px_430px] lg:gap-5 lg:bg-transparent">
+    <section className="relative overflow-hidden rounded-[5px] bg-[#111] lg:grid lg:h-[300px] lg:grid-cols-[750px_430px] lg:gap-5 lg:bg-transparent">
       <div className="relative overflow-hidden rounded-[8px] bg-[#111]">
         <div
           className="flex transition-transform duration-500 ease-out"
@@ -628,7 +628,7 @@ function Hero({ onCategory }: { onCategory: (category: string) => void }) {
             >
               <picture>
                 <source media="(min-width: 1024px)" srcSet={slide.desktop} />
-                <img className="block aspect-[500/280] w-full object-cover lg:h-[390px] lg:aspect-auto" src={slide.mobile} alt={slide.alt} />
+                <img className="block aspect-[500/280] w-full object-cover lg:h-[300px] lg:aspect-auto" src={slide.mobile} alt={slide.alt} />
               </picture>
             </button>
           ))}
