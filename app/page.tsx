@@ -447,8 +447,7 @@ export default function HomePage() {
   }
 
   function openDetails(product: Product) {
-    setSelectedProduct(product);
-    setModal("details");
+    window.location.href = `/products/${product.id}`;
   }
 
   function buyNow(product: Product) {
@@ -820,15 +819,15 @@ function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, 
       <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-3 top-3 z-[1] grid h-9 w-9 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
         <Heart className={wished ? "h-5 w-5 fill-current" : "h-5 w-5"} />
       </button>
-      <button type="button" onClick={() => onDetails(product)} className="grid h-[220px] w-full place-items-center p-3 lg:h-[330px] lg:p-6">
+      <button type="button" onClick={() => onDetails(product)} className="grid h-[190px] w-full place-items-center p-3 lg:h-[270px] lg:p-6">
         <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
       </button>
       <div className="px-3 pb-3 lg:px-5 lg:pb-5">
         <button type="button" onClick={() => onDetails(product)} className="block text-left">
-          <h3 className="min-h-[60px] text-[18px] font-semibold leading-[1.16] text-brand-ink lg:text-[22px]">{product.title}</h3>
+          <h3 className="min-h-[52px] text-[17px] font-semibold leading-[1.16] text-brand-ink lg:min-h-[60px] lg:text-[24px]">{product.title}</h3>
         </button>
         <div className="mb-4 mt-3 flex flex-wrap items-center gap-2">
-          <strong className="text-[20px] font-extrabold text-brand-orange lg:text-[26px]">{formatPrice(product.price)}</strong>
+          <strong className="text-[20px] font-extrabold text-brand-orange lg:text-[24px]">{formatPrice(product.price)}</strong>
           {product.oldPrice ? <span className="text-base text-[#8b8b8b] line-through">{formatPrice(product.oldPrice)}</span> : null}
         </div>
         {disabled ? (
@@ -836,11 +835,10 @@ function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, 
         ) : quantity > 0 ? (
           <QuantityControl quantity={quantity} onMinus={() => onQuantity(product, quantity - 1)} onPlus={() => onQuantity(product, quantity + 1)} />
         ) : (
-          <button type="button" onClick={() => onAdd(product)} className="flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-bold text-brand-orange lg:h-12 lg:text-lg">
+          <button type="button" onClick={() => onAdd(product)} className="flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-bold text-brand-orange lg:h-[58px] lg:text-lg">
             <ShoppingCart className="h-5 w-5" /> Add To Cart
           </button>
         )}
-        <button type="button" onClick={() => onBuy(product)} disabled={disabled} className="mt-2 h-10 w-full rounded bg-brand-orange text-sm font-bold text-white disabled:bg-[#9ca3af]">Buy now</button>
       </div>
     </article>
   );
