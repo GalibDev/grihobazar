@@ -969,14 +969,14 @@ function ProductCard({ product, quantity, wished, organicCertified = false, tall
       <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-3 top-3 z-[1] grid h-8 w-8 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
         <Heart className={wished ? "h-4 w-4 fill-current" : "h-4 w-4"} />
       </button>
-      <button type="button" onClick={() => onDetails(product)} className="group grid h-[210px] w-full shrink-0 place-items-center overflow-hidden p-3 lg:h-[210px] lg:p-5">
+      <button type="button" onClick={() => onDetails(product)} className={`group grid w-full shrink-0 place-items-center overflow-hidden p-3 ${justForYou ? "h-[190px] lg:h-[190px] lg:p-5" : "h-[210px] lg:h-[210px] lg:p-5"}`}>
         <img className="max-h-full max-w-full object-contain transition-transform duration-300 ease-out group-hover:scale-110 group-focus-visible:scale-110" src={product.image} alt={product.title} />
       </button>
       <div className="flex min-h-0 flex-1 flex-col px-3 pb-3 lg:px-3 lg:pb-3">
         <button type="button" onClick={() => onDetails(product)} className="block text-left">
-          <h3 className={`min-h-[48px] overflow-hidden font-normal ${justForYou ? "text-[20px] leading-[1.15] text-[#222831] lg:min-h-[58px] lg:text-[20px]" : "text-[16px] leading-[1.35] text-[#020101] lg:min-h-[44px] lg:text-[16px]"}`}>{product.title}</h3>
+          <h3 className={`overflow-hidden font-normal ${justForYou ? "line-clamp-3 h-[72px] text-[20px] leading-[1.2] text-[#222831]" : "min-h-[48px] text-[16px] leading-[1.35] text-[#020101] lg:min-h-[44px] lg:text-[16px]"}`}>{product.title}</h3>
         </button>
-        <div className="mb-3 mt-2 flex flex-wrap items-center gap-2">
+        <div className={`${justForYou ? "mb-2 mt-1.5" : "mb-3 mt-2"} flex flex-wrap items-center gap-2`}>
           <strong className={`font-bold text-brand-orange ${justForYou ? "text-[20px]" : "text-[20px] lg:text-[19px]"}`}>{formatPrice(product.price)}</strong>
           {product.oldPrice ? <span className={`${justForYou ? "text-[16px] text-[#9a9a9a]" : "text-[15px] text-[#9a9a9a]"} line-through`}>{formatPrice(product.oldPrice)}</span> : null}
         </div>
