@@ -9,7 +9,7 @@ import { addCartItem } from "@/lib/cart-storage";
 import { StorefrontHeader } from "@/components/storefront-header";
 import type { Category, Product } from "@/lib/types";
 
-const formatPrice = (price: number) => `৳${price.toLocaleString("en-US")}`;
+const formatPrice = (price: number) => `\u09f3${price.toLocaleString("en-US")}`;
 const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 const fallbackTitles: Record<string, string> = {
@@ -56,6 +56,8 @@ const categoryFilters: Record<string, (product: Product) => boolean> = {
   lentils: (product) => product.category === "Flours & Lentils" && /dal|lentil/i.test(product.title),
 };
 
+const parentCategorySlugs = new Set(["honey", "spices", "dates", "nuts-seeds", "flours-lentils"]);
+
 export default function CollectionPage() {
   const params = useParams<{ slug: string }>();
   const [products, setProducts] = useState<Product[]>([]);
@@ -90,29 +92,29 @@ export default function CollectionPage() {
   }, [baseFilter, products, query, sort]);
 
   const maxPrice = filteredProducts.reduce((max, product) => Math.max(max, product.oldPrice ?? product.price), 0);
-  const filterOptions = categoryFilterOptions(params.slug, title);
+  const filterOptions = parentCategorySlugs.has(params.slug) ? categoryFilterOptions(params.slug, title) : [];
 
   return (
     <main className="min-h-screen bg-[#eef0f5] text-brand-ink">
       <StorefrontHeader />
-      <section className="mx-auto max-w-[1760px] px-4 py-7 lg:px-8">
-        <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
-          <h1 className="capitalize text-[34px] font-semibold lg:text-[42px]">{title}</h1>
-          <div className="text-xl text-[#666]">
+      <section className="mx-auto max-w-[1760px] px-4 py-6 lg:px-8">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+          <h1 className="capitalize text-[32px] font-semibold lg:text-[38px]">{title}</h1>
+          <div className="text-lg text-[#666]">
             <Link href="/" className="hover:text-brand-orange">Home</Link>
             <span className="mx-2">›</span>
             <span className="capitalize text-brand-ink">{title}</span>
           </div>
         </div>
 
-        <div className="grid gap-7 lg:grid-cols-[430px_1fr]">
-          <aside className="grid content-start gap-5">
+        <div className="grid gap-7 lg:grid-cols-[436px_1fr]">
+          <aside className="grid content-start gap-3">
             {filterOptions.length ? (
               <FilterPanel title="FILTER BY CATEGORY">
                 <div className="grid gap-3">
                   {filterOptions.map((option) => (
-                    <Link key={option} href={`/collections/${slugify(option)}`} className="flex items-center gap-3 text-xl text-brand-ink hover:text-brand-orange">
-                      <span className={`h-6 w-6 rounded border ${slugify(option) === params.slug ? "border-brand-orange bg-brand-orange" : "border-[#c9c9c9] bg-white"}`} />
+                    <Link key={option} href={`/collections/${slugify(option)}`} className="flex items-center gap-3 text-[20px] text-brand-ink hover:text-brand-orange">
+                      <span className={`h-5 w-5 rounded border ${slugify(option) === params.slug ? "border-brand-orange bg-brand-orange" : "border-[#c9c9c9] bg-white"}`} />
                       {option}
                     </Link>
                   ))}
@@ -120,29 +122,29 @@ export default function CollectionPage() {
               </FilterPanel>
             ) : null}
             <FilterPanel title="PRICE RANGE">
-              <div className="mb-4 flex justify-between text-xl font-semibold">
+              <div className="mb-4 flex justify-between text-[20px] font-semibold">
                 <span>{formatPrice(0)}</span>
                 <span>{formatPrice(maxPrice)}</span>
               </div>
               <div className="relative h-2 rounded-full bg-brand-orange">
-                <span className="absolute -top-2 left-0 h-7 w-7 rounded-full bg-brand-orange shadow-soft" />
-                <span className="absolute -top-2 right-0 h-7 w-7 rounded-full bg-brand-orange shadow-soft" />
+                <span className="absolute -top-2 left-0 h-6 w-6 rounded-full bg-brand-orange shadow-soft" />
+                <span className="absolute -top-2 right-0 h-6 w-6 rounded-full bg-brand-orange shadow-soft" />
               </div>
             </FilterPanel>
             <FilterPanel title="BRANDS">
-              <label className="flex items-center gap-3 text-xl text-brand-ink">
-                <span className="h-6 w-6 rounded border border-[#c9c9c9] bg-white" />
+              <label className="flex items-center gap-3 text-[20px] text-brand-ink">
+                <span className="h-5 w-5 rounded border border-[#c9c9c9] bg-white" />
                 {brandNameFor(title)}
               </label>
             </FilterPanel>
           </aside>
 
           <section>
-            <div className="mb-7 flex flex-wrap items-center justify-between gap-4 rounded bg-white p-5 shadow-soft">
-              <label className="flex items-center gap-3 text-xl font-semibold">
+            <div className="mb-7 flex flex-wrap items-center justify-between gap-4 rounded bg-white px-5 py-4 shadow-soft">
+              <label className="flex items-center gap-3 text-lg font-semibold">
                 Sort By :
                 <span className="relative">
-                  <select value={sort} onChange={(event) => setSort(event.target.value)} className="h-14 appearance-none rounded border border-[#d7d7d7] bg-white px-5 pr-12 font-normal outline-none focus:border-brand-orange">
+                  <select value={sort} onChange={(event) => setSort(event.target.value)} className="h-12 appearance-none rounded border border-[#d7d7d7] bg-white px-4 pr-11 font-normal outline-none focus:border-brand-orange">
                     <option value="default">Default Sorting</option>
                     <option value="oldest">Sort by Oldest</option>
                     <option value="low">Price Low to High</option>
@@ -151,7 +153,7 @@ export default function CollectionPage() {
                   <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-orange" />
                 </span>
               </label>
-              <input value={query} onChange={(event) => setQuery(event.target.value)} className="h-14 rounded border px-5 text-lg outline-none focus:border-brand-orange" placeholder="Search products" />
+              <input value={query} onChange={(event) => setQuery(event.target.value)} className="h-12 rounded border px-5 text-lg outline-none focus:border-brand-orange" placeholder="Search products" />
             </div>
 
             {filteredProducts.length ? (
@@ -185,13 +187,13 @@ function brandNameFor(title: string) {
 
 function FilterPanel({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="rounded bg-white p-5 shadow-soft">
-      <div className="mb-4 flex items-center justify-between border-b border-[#dedede] pb-4">
+    <div className="rounded bg-white px-5 py-4 shadow-soft">
+      <div className="mb-4 flex items-center justify-between border-b border-[#dedede] pb-3">
         <div>
-          <h2 className="text-xl font-bold tracking-wide">{title}</h2>
-          <div className="mt-4 h-1 w-[142px] rounded-full bg-brand-orange" />
+          <h2 className="text-lg font-bold tracking-wide">{title}</h2>
+          <div className="mt-3 h-1 w-[142px] rounded-full bg-brand-orange" />
         </div>
-        <span className="text-2xl text-[#666]">-</span>
+        <span className="text-xl text-[#666]">-</span>
       </div>
       {children}
     </div>
@@ -204,17 +206,17 @@ function CollectionProductCard({ product }: { product: Product }) {
     <article className="relative overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white">
       {product.badge ? <span className="absolute right-4 top-5 z-[1] rounded bg-[#35c486] px-2 py-1 text-sm font-semibold text-white">{product.badge}</span> : null}
       <Link href={`/products/${product.id}`} className="block">
-        <div className="grid h-[300px] place-items-center p-5">
+        <div className="grid h-[280px] place-items-center p-5">
           <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
         </div>
-        <h2 className="min-h-[68px] px-4 text-[24px] font-medium leading-tight">{product.title}</h2>
+        <h2 className="min-h-[64px] px-4 text-[23px] font-medium leading-tight">{product.title}</h2>
       </Link>
       <div className="mt-2 flex items-center gap-3 px-4">
-        <strong className="text-[24px] font-extrabold text-brand-orange">{formatPrice(product.price)}</strong>
+        <strong className="text-[22px] font-extrabold text-brand-orange">{formatPrice(product.price)}</strong>
         {product.oldPrice ? <span className="text-lg text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
       </div>
       <div className="p-4">
-        <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="inline-flex h-[58px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-lg font-bold text-brand-orange">
+        <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="inline-flex h-[52px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-lg font-bold text-brand-orange">
           <ShoppingCart className="h-5 w-5" />
           {added ? "Added" : "Add To Cart"}
         </button>
