@@ -70,6 +70,7 @@ export default function AdminPage() {
   const [bannerDraft, setBannerDraft] = useState<Banner>(emptyBanner);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [productQuery, setProductQuery] = useState("");
+  const [selectedProductCategory, setSelectedProductCategory] = useState("All");
   const [orderQuery, setOrderQuery] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,17 +82,19 @@ export default function AdminPage() {
   const pendingOrders = orders.filter((order) => order.status === "pending").length;
   const stockOut = products.filter((product) => product.stock === "out").length;
   const lowStockProducts = products.filter((product) => product.stock === "out" || product.stock === "preorder");
-  const filteredProducts = products.filter((product) =>
-    `${product.title} ${product.category} ${product.stock ?? ""}`.toLowerCase().includes(productQuery.toLowerCase()),
-  );
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedProductCategory === "All" || product.category === selectedProductCategory;
+    const matchesQuery = `${product.title} ${product.category} ${product.stock ?? ""}`.toLowerCase().includes(productQuery.toLowerCase());
+    return matchesCategory && matchesQuery;
+  });
   const filteredOrders = orders.filter((order) =>
     `${order.id} ${order.customerName} ${order.phone} ${order.status}`.toLowerCase().includes(orderQuery.toLowerCase()),
   );
 
   const categoryNames = useMemo(() => {
-    const names = categories.map((category) => category.title);
+    const names = Array.from(new Set([...categories.map((category) => category.title), ...products.map((product) => product.category)]));
     return names.length ? names : ["Honey", "Oil & Ghee", "Dates", "Spices", "Mango", "Organic"];
-  }, [categories]);
+  }, [categories, products]);
 
   useEffect(() => {
     void loadData();
@@ -421,13 +424,29 @@ export default function AdminPage() {
           </div>
 
           <div className="rounded-lg border bg-white">
-            <div className="flex items-center justify-between border-b px-5 py-4">
+            <div className="flex flex-col gap-3 border-b px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
               <h2 className="text-xl font-bold">Products</h2>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <label className="grid gap-1 text-xs font-semibold uppercase tracking-wide text-[#666]">
+                  Category
+                  <select
+                    value={selectedProductCategory}
+                    onChange={(event) => setSelectedProductCategory(event.target.value)}
+                    className="h-10 min-w-[190px] rounded border px-3 text-sm font-normal normal-case tracking-normal text-brand-ink outline-none focus:border-brand-orange"
+                  >
+                    <option value="All">All categories</option>
+                    {categoryNames.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 <label className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#777]" />
                   <input value={productQuery} onChange={(event) => setProductQuery(event.target.value)} className="h-10 rounded border pl-9 pr-3 outline-none focus:border-brand-orange" placeholder="Search products" />
                 </label>
+                <span className="text-sm text-[#666]">{filteredProducts.length} shown / {products.length} total</span>
                 <span className="text-sm text-[#666]">{stockOut} stock out</span>
               </div>
             </div>
@@ -446,32 +465,40 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredProducts.map((product) => (
-                      <tr key={product.id} className="border-t">
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <img className="h-14 w-14 rounded border object-contain" src={product.image} alt={product.title} />
-                            <div>
-                              <strong className="block">{product.title}</strong>
-                              <span className="text-xs text-[#777]">{product.id}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">{product.category}</td>
-                        <td className="px-4 py-3 font-bold text-brand-orange">{formatPrice(product.price)}</td>
-                        <td className="px-4 py-3">{product.stock ?? "in"}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-2">
-                            <button type="button" onClick={() => startEdit(product)} className="rounded border px-3 py-2 font-semibold">
-                              Edit
-                            </button>
-                            <button type="button" onClick={() => deleteProduct(product.id)} className="rounded bg-[#ef4444] px-3 py-2 font-semibold text-white">
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
+                    {filteredProducts.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-8 text-center text-[#777]">
+                          No products found for this category/search.
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      filteredProducts.map((product) => (
+                        <tr key={product.id} className="border-t">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              <img className="h-14 w-14 rounded border object-contain" src={product.image} alt={product.title} />
+                              <div>
+                                <strong className="block">{product.title}</strong>
+                                <span className="text-xs text-[#777]">{product.id}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">{product.category}</td>
+                          <td className="px-4 py-3 font-bold text-brand-orange">{formatPrice(product.price)}</td>
+                          <td className="px-4 py-3">{product.stock ?? "in"}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-2">
+                              <button type="button" onClick={() => startEdit(product)} className="rounded border px-3 py-2 font-semibold">
+                                Edit
+                              </button>
+                              <button type="button" onClick={() => deleteProduct(product.id)} className="rounded bg-[#ef4444] px-3 py-2 font-semibold text-white">
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
