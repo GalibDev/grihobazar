@@ -583,7 +583,7 @@ function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCo
 
 function DesktopNav({ onCategory }: { onCategory: (category: string) => void }) {
   return (
-    <nav className="hidden bg-[#052925] text-white lg:block">
+    <nav className="sticky top-0 z-30 hidden bg-[#052925] text-white lg:block">
       <div className="mx-auto flex h-[65px] max-w-[1200px] items-center justify-between gap-4 overflow-x-auto px-0">
         {menuItems.map((label) => (
           <button key={label} type="button" onClick={() => onCategory(label)} className="flex shrink-0 items-center gap-1 text-[14px] font-semibold leading-none">
