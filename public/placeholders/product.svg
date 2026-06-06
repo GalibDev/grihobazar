@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-labelledby="title desc">
+  <title id="title">Product image coming soon</title>
+  <desc id="desc">A clean placeholder for products that need a final uploaded image.</desc>
+  <rect width="640" height="480" fill="#fff7ed"/>
+  <rect x="72" y="64" width="496" height="352" rx="28" fill="#ffffff" stroke="#f97316" stroke-width="8"/>
+  <circle cx="228" cy="190" r="54" fill="#fed7aa"/>
+  <path d="M128 352c72-84 118-126 168-126 46 0 78 38 112 77 18-20 42-41 72-41 27 0 51 18 88 72v50H128z" fill="#fb923c"/>
+  <path d="M178 172c38-56 103-74 162-40-58 15-94 46-116 98-21-4-37-20-46-58z" fill="#16a34a"/>
+  <text x="320" y="438" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#1f2937">Image coming soon</text>
+</svg>
