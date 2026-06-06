@@ -88,7 +88,7 @@ export function StorefrontHeader() {
       </header>
 
       <nav className="sticky top-0 z-30 bg-[#002c26] text-white">
-        <div className="mx-auto flex h-[50px] max-w-[1200px] items-center justify-between gap-4 overflow-x-auto px-0 text-[14px] font-medium [scrollbar-width:none] xl:w-[calc(100%-240px)] [&::-webkit-scrollbar]:hidden">
+        <div className="mx-auto flex h-[65px] max-w-[1200px] items-center justify-between gap-4 overflow-x-auto px-0 text-[14px] font-medium [scrollbar-width:none] xl:w-[calc(100%-240px)] [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => (
             <div key={item.title} className="group relative flex h-full shrink-0 items-center">
               <Link href={item.href} className="flex items-center gap-2 hover:text-brand-orange">
