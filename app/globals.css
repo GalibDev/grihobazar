@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.menu-open {
+  overflow: hidden;
+}
+
+.phone-edge-left {
+  left: calc((100vw - min(100vw, 430px)) / 2);
+}
+
+.phone-edge-right {
+  right: calc((100vw - min(100vw, 430px)) / 2);
+}
+
+.drawer-close-position {
+  left: calc((100vw - min(100vw, 430px)) / 2 + min(74vw, 326px) + 16px);
+}
+
+@media (min-width: 1024px) {
+  .phone-edge-left {
+    left: 0;
+  }
+
+  .phone-edge-right {
+    right: 0;
+  }
+}
