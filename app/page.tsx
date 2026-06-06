@@ -490,7 +490,7 @@ export default function HomePage() {
       <DesktopHeader cartCount={cartCount} onModal={setModal} onCart={() => setCartOpen(true)} query={query} setQuery={setQuery} />
       <DesktopNav onCategory={jumpToCategory} />
 
-      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1200px] lg:px-0 lg:pb-24 lg:pt-9 xl:w-[calc(100%-240px)]">
+      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1233px] lg:px-[49px] lg:pb-24 lg:pt-9 xl:w-auto">
         <Hero onCategory={jumpToCategory} />
         <FeaturedCategories onCategory={jumpToCategory} />
 
@@ -612,7 +612,7 @@ function Hero({ onCategory }: { onCategory: (category: string) => void }) {
   };
 
   return (
-    <section className="relative overflow-hidden rounded-[5px] bg-[#111] lg:grid lg:h-[300px] lg:grid-cols-[750px_430px] lg:gap-5 lg:bg-transparent">
+    <section className="relative overflow-hidden rounded-[5px] bg-[#111] lg:grid lg:h-[300px] lg:grid-cols-[750px_365px] lg:gap-5 lg:bg-transparent">
       <div className="relative overflow-hidden rounded-[8px] bg-[#111]">
         <div
           className="flex transition-transform duration-500 ease-out"
