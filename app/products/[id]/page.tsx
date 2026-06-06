@@ -4,10 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, MessageCircle, Minus, Phone, Plus, ShoppingBag, ShoppingCart, Star } from "lucide-react";
-import { addCartItem, readCart } from "@/lib/cart-storage";
+import { addCartItem } from "@/lib/cart-storage";
+import { StorefrontHeader } from "@/components/storefront-header";
 import type { Product } from "@/lib/types";
 
-const formatPrice = (price: number) => `à§³${price.toLocaleString("en-US")}`;
+const formatPrice = (price: number) => `৳${price.toLocaleString("en-US")}`;
 const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 export default function ProductDetailsPage() {
@@ -16,8 +17,6 @@ export default function ProductDetailsPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [cartCount, setCartCount] = useState(0);
-  const [cartTotal, setCartTotal] = useState(0);
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState<"description" | "reviews">("description");
 
@@ -29,18 +28,6 @@ export default function ProductDetailsPage() {
         setProduct(items.find((item) => item.id === params.id) ?? null);
       });
   }, [params.id]);
-
-  useEffect(() => {
-    const updateCart = () => {
-      const items = readCart();
-      setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
-      setCartTotal(items.reduce((sum, item) => sum + item.price * item.quantity, 0));
-    };
-
-    updateCart();
-    window.addEventListener("grihobazar-cart", updateCart);
-    return () => window.removeEventListener("grihobazar-cart", updateCart);
-  }, []);
 
   const gallery = useMemo(() => {
     if (!product) return [];
@@ -72,11 +59,11 @@ export default function ProductDetailsPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f7f7] text-brand-ink">
-      <ProductTopNav />
+      <StorefrontHeader />
       <section className="mx-auto max-w-[1760px] px-4 py-6 lg:px-8">
         <div className="mb-5 text-sm text-[#666]">
           <Link href="/" className="hover:text-brand-orange">Home</Link>
-          <span className="mx-2">›</span>
+          <span className="mx-2">&gt;</span>
           <Link href={`/collections/${slugify(product.category)}`} className="hover:text-brand-orange">Products</Link>
         </div>
 
@@ -169,20 +156,7 @@ export default function ProductDetailsPage() {
           </div>
         </section>
       </section>
-
-      <FloatingMiniCart count={cartCount} total={cartTotal} />
     </main>
-  );
-}
-
-function ProductTopNav() {
-  const nav = ["Combos", "Offer Zone", "Mango", "Honey", "Oil & Ghee", "Dates", "Spices", "Nuts & Seeds", "Beverage", "Rice", "Flours & Lentils", "Certified", "Pickle", "Tabaya"];
-  return (
-    <header className="sticky top-0 z-20 bg-[#002c26] text-white">
-      <nav className="mx-auto flex h-[82px] max-w-[1760px] items-center gap-9 overflow-x-auto px-6 text-xl font-medium [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {nav.map((item) => <Link key={item} href={`/collections/${slugify(item)}`} className="shrink-0">{item}</Link>)}
-      </nav>
-    </header>
   );
 }
 
@@ -261,17 +235,5 @@ function RelatedProductCard({ product }: { product: Product }) {
         {added ? "Added" : "Add To Cart"}
       </button>
     </article>
-  );
-}
-
-function FloatingMiniCart({ count, total }: { count: number; total: number }) {
-  return (
-    <Link href="/cart" className="fixed right-0 top-1/2 z-30 hidden -translate-y-1/2 overflow-hidden rounded-l-lg bg-white text-center shadow-float lg:block">
-      <span className="grid bg-brand-orange px-5 py-4 text-white">
-        <ShoppingBag className="mx-auto h-8 w-8" />
-        <span className="text-lg font-semibold">{count} Items</span>
-      </span>
-      <strong className="block px-5 py-3 text-xl text-brand-orange">{formatPrice(total)}</strong>
-    </Link>
   );
 }
