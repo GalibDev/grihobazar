@@ -1,17 +1,20 @@
-import Database from "better-sqlite3";
-import { mkdirSync } from "fs";
-import path from "path";
-import type { Banner, Category, Order, OrderItem, Product, StoreData, StoreSettings } from "./types";
+import { createClient } from "@supabase/supabase-js";
+import type { Banner, Category, Order, Product, StoreData, StoreSettings } from "./types";
 
-const dataDir = path.join(process.cwd(), "data");
-const dbFile = path.join(dataDir, "grihobazar.db");
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-mkdirSync(dataDir, { recursive: true });
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+  throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+}
 
-const db = new Database(dbFile);
-db.pragma("journal_mode = WAL");
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
+  auth: {
+    persistSession: false,
+  },
+});
 
-const categories: Category[] = [
+const defaultCategories: Category[] = [
   { title: "Oil & Ghee", slug: "oil-ghee", image: "https://backoffice.ghorerbazar.com/category_images/Zf99g1774766372.png" },
   { title: "Organic", slug: "organic", image: "https://backoffice.ghorerbazar.com/category_images/HJOrw1774766749.png" },
   { title: "Honey", slug: "honey", image: "https://backoffice.ghorerbazar.com/category_images/KbWCe1774766391.png" },
@@ -22,43 +25,7 @@ const categories: Category[] = [
   { title: "Flours & Lentils", slug: "flours-lentils", image: "https://backoffice.ghorerbazar.com/productImages/XA6LK1767439665.jpg" },
 ];
 
-const banners: Banner[] = [
-  {
-    id: "mango-hero",
-    title: "Mango offer",
-    image: "https://backoffice.ghorerbazar.com/banner/hSjx41780379939-dark-1000x400.png",
-    mobileImage: "https://backoffice.ghorerbazar.com/banner/Gcahd1780379939-dark-500x280.png",
-    category: "Mango",
-    active: true,
-  },
-  {
-    id: "dates-hero",
-    title: "Dates collection",
-    image: "https://backoffice.ghorerbazar.com/banner/sCUkg1774768074-dark.png",
-    mobileImage: "https://backoffice.ghorerbazar.com/banner/I2Vto1774768074-dark.png",
-    category: "Dates",
-    active: true,
-  },
-  {
-    id: "honey-hero",
-    title: "Honey collection",
-    image: "https://backoffice.ghorerbazar.com/banner/wvLKI1771837751.jpeg",
-    mobileImage: "https://backoffice.ghorerbazar.com/banner/3ANBj1767529509.jpg",
-    category: "Honey",
-    active: true,
-  },
-];
-
-const defaultSettings: StoreSettings = {
-  insideDhakaDelivery: 80,
-  outsideDhakaDelivery: 130,
-  pickupDelivery: 0,
-  bkashNumber: "01XXXXXXXXX",
-  nagadNumber: "01XXXXXXXXX",
-  whatsappNumber: "8809642922922",
-};
-
-const products: Product[] = [
+const defaultProducts: Product[] = [
   { id: "sundarban-honey-1kg", title: "Sundarban Honey 1kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/CvT2N1767414529.jpg", price: 2300, oldPrice: 2500, badge: "Save Tk 200", badgeTone: "green", featured: true, stock: "in" },
   { id: "gawa-ghee-1kg", title: "Gawa Ghee 1kg", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/VvzII1767097227.jpg", price: 1800, badge: "Best Selling", badgeTone: "red", featured: true, stock: "in" },
   { id: "black-seed-honey-1kg", title: "Black Seed Honey 1kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/fAewT1767418525.jpg", price: 1500, oldPrice: 1600, badge: "Save Tk 100", badgeTone: "green", stock: "in" },
@@ -71,199 +38,145 @@ const products: Product[] = [
   { id: "spirulina-250g", title: "Organic Spirulina Powder 250 gm", category: "Organic", image: "https://backoffice.ghorerbazar.com/productImages/Ba33d1767588217.jpg", price: 1140, oldPrice: 1200, badge: "New Arrival", badgeTone: "orange", stock: "in" },
 ];
 
-type ProductRow = Omit<Product, "featured"> & { featured: 0 | 1 };
-type OrderRow = Omit<Order, "items"> & { items: string };
-type BannerRow = Omit<Banner, "active"> & { active: 0 | 1 };
+const defaultBanners: Banner[] = [
+  { id: "mango-hero", title: "Mango offer", image: "https://backoffice.ghorerbazar.com/banner/hSjx41780379939-dark-1000x400.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/Gcahd1780379939-dark-500x280.png", category: "Mango", active: true },
+  { id: "dates-hero", title: "Dates collection", image: "https://backoffice.ghorerbazar.com/banner/sCUkg1774768074-dark.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/I2Vto1774768074-dark.png", category: "Dates", active: true },
+  { id: "honey-hero", title: "Honey collection", image: "https://backoffice.ghorerbazar.com/banner/wvLKI1771837751.jpeg", mobileImage: "https://backoffice.ghorerbazar.com/banner/3ANBj1767529509.jpg", category: "Honey", active: true },
+];
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS products (
-    id TEXT PRIMARY KEY,
-    title TEXT NOT NULL,
-    category TEXT NOT NULL,
-    image TEXT NOT NULL,
-    price INTEGER NOT NULL,
-    oldPrice INTEGER,
-    badge TEXT,
-    badgeTone TEXT,
-    stock TEXT DEFAULT 'in',
-    featured INTEGER DEFAULT 0
-  );
+const defaultSettings: StoreSettings = {
+  insideDhakaDelivery: 80,
+  outsideDhakaDelivery: 130,
+  pickupDelivery: 0,
+  bkashNumber: "01XXXXXXXXX",
+  nagadNumber: "01XXXXXXXXX",
+  whatsappNumber: "8809642922922",
+};
 
-  CREATE TABLE IF NOT EXISTS categories (
-    slug TEXT PRIMARY KEY,
-    title TEXT NOT NULL,
-    image TEXT NOT NULL
-  );
+let seeded = false;
 
-  CREATE TABLE IF NOT EXISTS orders (
-    id TEXT PRIMARY KEY,
-    customerName TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    address TEXT NOT NULL,
-    note TEXT,
-    status TEXT NOT NULL,
-    paymentMethod TEXT NOT NULL,
-    paymentStatus TEXT NOT NULL,
-    paymentTransactionId TEXT,
-    deliveryCharge INTEGER NOT NULL,
-    trackingCode TEXT NOT NULL,
-    items TEXT NOT NULL,
-    total INTEGER NOT NULL,
-    createdAt TEXT NOT NULL
-  );
-
-  CREATE TABLE IF NOT EXISTS banners (
-    id TEXT PRIMARY KEY,
-    title TEXT NOT NULL,
-    image TEXT NOT NULL,
-    mobileImage TEXT,
-    category TEXT NOT NULL,
-    active INTEGER DEFAULT 1
-  );
-
-  CREATE TABLE IF NOT EXISTS settings (
-    key TEXT PRIMARY KEY,
-    value TEXT NOT NULL
-  );
-`);
-
-migrateDatabase();
-
-seedDatabase();
-
-function migrateDatabase() {
-  const orderColumns = db.prepare("PRAGMA table_info(orders)").all() as Array<{ name: string }>;
-  const orderColumnNames = new Set(orderColumns.map((column) => column.name));
-
-  if (!orderColumnNames.has("note")) {
-    db.prepare("ALTER TABLE orders ADD COLUMN note TEXT").run();
-  }
-  if (!orderColumnNames.has("paymentTransactionId")) {
-    db.prepare("ALTER TABLE orders ADD COLUMN paymentTransactionId TEXT").run();
-  }
-}
-
-function toProductRecord(item: Product) {
+function mapProduct(row: Record<string, unknown>): Product {
   return {
-    id: item.id,
-    title: item.title,
-    category: item.category,
-    image: item.image,
-    price: item.price,
-    oldPrice: item.oldPrice ?? null,
-    badge: item.badge ?? null,
-    badgeTone: item.badgeTone ?? null,
-    stock: item.stock ?? "in",
-    featured: item.featured ? 1 : 0,
-  };
-}
-
-function toOrderRecord(item: Order) {
-  return {
-    id: item.id,
-    customerName: item.customerName,
-    phone: item.phone,
-    address: item.address,
-    note: item.note ?? null,
-    status: item.status,
-    paymentMethod: item.paymentMethod ?? "cash",
-    paymentStatus: item.paymentStatus ?? "unpaid",
-    paymentTransactionId: item.paymentTransactionId ?? null,
-    deliveryCharge: item.deliveryCharge ?? 0,
-    trackingCode: item.trackingCode ?? item.id,
-    items: JSON.stringify(item.items),
-    total: item.total,
-    createdAt: item.createdAt,
-  };
-}
-
-function toBannerRecord(item: Banner) {
-  return {
-    id: item.id,
-    title: item.title,
-    image: item.image,
-    mobileImage: item.mobileImage ?? null,
-    category: item.category,
-    active: item.active ? 1 : 0,
-  };
-}
-
-function seedDatabase() {
-  const productCount = db.prepare("SELECT COUNT(*) as count FROM products").get() as { count: number };
-  const categoryCount = db.prepare("SELECT COUNT(*) as count FROM categories").get() as { count: number };
-  const bannerCount = db.prepare("SELECT COUNT(*) as count FROM banners").get() as { count: number };
-  const settingsCount = db.prepare("SELECT COUNT(*) as count FROM settings").get() as { count: number };
-
-  if (categoryCount.count === 0) {
-    const insertCategory = db.prepare("INSERT INTO categories (slug, title, image) VALUES (@slug, @title, @image)");
-    const insertMany = db.transaction((items: Category[]) => items.forEach((item) => insertCategory.run(item)));
-    insertMany(categories);
-  }
-
-  if (productCount.count === 0) {
-    const insertProduct = db.prepare(`
-      INSERT INTO products (id, title, category, image, price, oldPrice, badge, badgeTone, stock, featured)
-      VALUES (@id, @title, @category, @image, @price, @oldPrice, @badge, @badgeTone, @stock, @featured)
-    `);
-    const insertMany = db.transaction((items: Product[]) => {
-      items.forEach((item) => insertProduct.run(toProductRecord(item)));
-    });
-    insertMany(products);
-  }
-
-  if (bannerCount.count === 0) {
-    const insertBanner = db.prepare("INSERT INTO banners (id, title, image, mobileImage, category, active) VALUES (@id, @title, @image, @mobileImage, @category, @active)");
-    const insertMany = db.transaction((items: Banner[]) => items.forEach((item) => insertBanner.run(toBannerRecord(item))));
-    insertMany(banners);
-  }
-
-  if (settingsCount.count === 0) {
-    const insertSetting = db.prepare("INSERT INTO settings (key, value) VALUES (?, ?)");
-    const insertMany = db.transaction((settings: StoreSettings) => {
-      Object.entries(settings).forEach(([key, value]) => insertSetting.run(key, String(value)));
-    });
-    insertMany(defaultSettings);
-  }
-}
-
-function mapProduct(row: ProductRow): Product {
-  return {
-    ...row,
-    oldPrice: row.oldPrice ?? undefined,
-    badge: row.badge ?? undefined,
-    badgeTone: row.badgeTone ?? undefined,
-    stock: row.stock ?? "in",
+    id: String(row.id),
+    title: String(row.title),
+    category: String(row.category),
+    image: String(row.image),
+    price: Number(row.price),
+    oldPrice: row.old_price === null ? undefined : Number(row.old_price),
+    badge: row.badge === null ? undefined : String(row.badge),
+    badgeTone: row.badge_tone === null ? undefined : row.badge_tone as Product["badgeTone"],
+    stock: row.stock as Product["stock"],
     featured: Boolean(row.featured),
   };
 }
 
-function mapOrder(row: OrderRow): Order {
+function toProductRow(product: Product) {
   return {
-    ...row,
-    items: JSON.parse(row.items) as OrderItem[],
-    status: row.status as Order["status"],
-    paymentMethod: row.paymentMethod as Order["paymentMethod"],
-    paymentStatus: row.paymentStatus as Order["paymentStatus"],
+    id: product.id,
+    title: product.title,
+    category: product.category,
+    image: product.image,
+    price: product.price,
+    old_price: product.oldPrice ?? null,
+    badge: product.badge ?? null,
+    badge_tone: product.badgeTone ?? null,
+    stock: product.stock ?? "in",
+    featured: Boolean(product.featured),
   };
 }
 
-function mapBanner(row: BannerRow): Banner {
+function mapBanner(row: Record<string, unknown>): Banner {
   return {
-    ...row,
-    mobileImage: row.mobileImage ?? undefined,
+    id: String(row.id),
+    title: String(row.title),
+    image: String(row.image),
+    mobileImage: row.mobile_image === null ? undefined : String(row.mobile_image),
+    category: String(row.category),
     active: Boolean(row.active),
   };
 }
 
-function readSettings(): StoreSettings {
-  const rows = db.prepare("SELECT key, value FROM settings").all() as Array<{ key: keyof StoreSettings; value: string }>;
-  const settings = { ...defaultSettings };
+function toBannerRow(banner: Banner) {
+  return {
+    id: banner.id,
+    title: banner.title,
+    image: banner.image,
+    mobile_image: banner.mobileImage ?? null,
+    category: banner.category,
+    active: Boolean(banner.active),
+  };
+}
 
-  rows.forEach((row) => {
-    if (row.key === "insideDhakaDelivery" || row.key === "outsideDhakaDelivery" || row.key === "pickupDelivery") {
-      settings[row.key] = Number(row.value) as never;
+function mapOrder(row: Record<string, unknown>): Order {
+  return {
+    id: String(row.id),
+    customerName: String(row.customer_name),
+    phone: String(row.phone),
+    address: String(row.address),
+    note: row.note === null ? undefined : String(row.note),
+    status: row.status as Order["status"],
+    paymentMethod: row.payment_method as Order["paymentMethod"],
+    paymentStatus: row.payment_status as Order["paymentStatus"],
+    paymentTransactionId: row.payment_transaction_id === null ? undefined : String(row.payment_transaction_id),
+    deliveryCharge: Number(row.delivery_charge),
+    trackingCode: String(row.tracking_code),
+    items: Array.isArray(row.items) ? row.items as Order["items"] : JSON.parse(String(row.items)) as Order["items"],
+    total: Number(row.total),
+    createdAt: String(row.created_at),
+  };
+}
+
+function toOrderRow(order: Order) {
+  return {
+    id: order.id,
+    customer_name: order.customerName,
+    phone: order.phone,
+    address: order.address,
+    note: order.note ?? null,
+    status: order.status,
+    payment_method: order.paymentMethod,
+    payment_status: order.paymentStatus,
+    payment_transaction_id: order.paymentTransactionId ?? null,
+    delivery_charge: order.deliveryCharge,
+    tracking_code: order.trackingCode,
+    items: order.items,
+    total: order.total,
+    created_at: order.createdAt,
+  };
+}
+
+function toSettingsRows(settings: StoreSettings) {
+  return Object.entries(settings).map(([key, value]) => ({ key, value: String(value) }));
+}
+
+async function seedDatabase() {
+  if (seeded) return;
+  seeded = true;
+
+  const { count, error } = await supabase.from("products").select("*", { count: "exact", head: true });
+  if (error) {
+    throw new Error(`Supabase schema missing. Run supabase/schema.sql first. ${error.message}`);
+  }
+
+  if ((count ?? 0) > 0) return;
+
+  await supabase.from("categories").upsert(defaultCategories);
+  await supabase.from("products").upsert(defaultProducts.map(toProductRow));
+  await supabase.from("banners").upsert(defaultBanners.map(toBannerRow));
+  await supabase.from("settings").upsert(toSettingsRows(defaultSettings));
+}
+
+async function readSettings(): Promise<StoreSettings> {
+  const { data, error } = await supabase.from("settings").select("*");
+  if (error) throw error;
+
+  const settings = { ...defaultSettings };
+  (data ?? []).forEach((row) => {
+    const key = row.key as keyof StoreSettings;
+    if (key === "insideDhakaDelivery" || key === "outsideDhakaDelivery" || key === "pickupDelivery") {
+      settings[key] = Number(row.value) as never;
     } else {
-      settings[row.key] = row.value as never;
+      settings[key] = String(row.value) as never;
     }
   });
 
@@ -271,48 +184,57 @@ function readSettings(): StoreSettings {
 }
 
 export async function readStore(): Promise<StoreData> {
-  const productRows = db.prepare("SELECT * FROM products ORDER BY rowid DESC").all() as ProductRow[];
-  const categoryRows = db.prepare("SELECT * FROM categories ORDER BY rowid ASC").all() as Category[];
-  const bannerRows = db.prepare("SELECT * FROM banners ORDER BY rowid ASC").all() as BannerRow[];
-  const orderRows = db.prepare("SELECT * FROM orders ORDER BY createdAt DESC").all() as OrderRow[];
+  await seedDatabase();
+
+  const [productsResult, categoriesResult, bannersResult, ordersResult, settings] = await Promise.all([
+    supabase.from("products").select("*").order("created_at", { ascending: false }),
+    supabase.from("categories").select("*").order("created_at", { ascending: true }),
+    supabase.from("banners").select("*").order("created_at", { ascending: true }),
+    supabase.from("orders").select("*").order("created_at", { ascending: false }),
+    readSettings(),
+  ]);
+
+  if (productsResult.error) throw productsResult.error;
+  if (categoriesResult.error) throw categoriesResult.error;
+  if (bannersResult.error) throw bannersResult.error;
+  if (ordersResult.error) throw ordersResult.error;
 
   return {
-    products: productRows.map(mapProduct),
-    categories: categoryRows,
-    banners: bannerRows.map(mapBanner),
-    settings: readSettings(),
-    orders: orderRows.map(mapOrder),
+    products: (productsResult.data ?? []).map(mapProduct),
+    categories: categoriesResult.data ?? [],
+    banners: (bannersResult.data ?? []).map(mapBanner),
+    settings,
+    orders: (ordersResult.data ?? []).map(mapOrder),
   };
 }
 
 export async function writeStore(data: StoreData) {
-  const replace = db.transaction((nextData: StoreData) => {
-    db.prepare("DELETE FROM products").run();
-    db.prepare("DELETE FROM categories").run();
-    db.prepare("DELETE FROM banners").run();
-    db.prepare("DELETE FROM settings").run();
-    db.prepare("DELETE FROM orders").run();
+  await seedDatabase();
 
-    const insertProduct = db.prepare(`
-      INSERT INTO products (id, title, category, image, price, oldPrice, badge, badgeTone, stock, featured)
-      VALUES (@id, @title, @category, @image, @price, @oldPrice, @badge, @badgeTone, @stock, @featured)
-    `);
-    const insertCategory = db.prepare("INSERT INTO categories (slug, title, image) VALUES (@slug, @title, @image)");
-    const insertBanner = db.prepare("INSERT INTO banners (id, title, image, mobileImage, category, active) VALUES (@id, @title, @image, @mobileImage, @category, @active)");
-    const insertSetting = db.prepare("INSERT INTO settings (key, value) VALUES (?, ?)");
-    const insertOrder = db.prepare(`
-      INSERT INTO orders (id, customerName, phone, address, note, status, paymentMethod, paymentStatus, paymentTransactionId, deliveryCharge, trackingCode, items, total, createdAt)
-      VALUES (@id, @customerName, @phone, @address, @note, @status, @paymentMethod, @paymentStatus, @paymentTransactionId, @deliveryCharge, @trackingCode, @items, @total, @createdAt)
-    `);
+  await supabase.from("products").delete().neq("id", "__never__");
+  await supabase.from("categories").delete().neq("slug", "__never__");
+  await supabase.from("banners").delete().neq("id", "__never__");
+  await supabase.from("orders").delete().neq("id", "__never__");
+  await supabase.from("settings").delete().neq("key", "__never__");
 
-    nextData.products.forEach((item) => insertProduct.run(toProductRecord(item)));
-    nextData.categories.forEach((item) => insertCategory.run(item));
-    nextData.banners.forEach((item) => insertBanner.run(toBannerRecord(item)));
-    Object.entries(nextData.settings).forEach(([key, value]) => insertSetting.run(key, String(value)));
-    nextData.orders.forEach((item) => insertOrder.run(toOrderRecord(item)));
+  if (data.categories.length) await supabase.from("categories").upsert(data.categories);
+  if (data.products.length) await supabase.from("products").upsert(data.products.map(toProductRow));
+  if (data.banners.length) await supabase.from("banners").upsert(data.banners.map(toBannerRow));
+  if (data.orders.length) await supabase.from("orders").upsert(data.orders.map(toOrderRow));
+  await supabase.from("settings").upsert(toSettingsRows(data.settings));
+}
+
+export async function uploadProductImage(fileName: string, bytes: Buffer, contentType: string) {
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? "product-images";
+  const { error } = await supabase.storage.from(bucket).upload(fileName, bytes, {
+    contentType,
+    upsert: true,
   });
 
-  replace(data);
+  if (error) throw error;
+
+  const { data } = supabase.storage.from(bucket).getPublicUrl(fileName);
+  return data.publicUrl;
 }
 
 export function makeId(value: string) {

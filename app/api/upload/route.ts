@@ -1,8 +1,6 @@
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { makeId } from "@/lib/store";
+import { makeId, uploadProductImage } from "@/lib/store";
 
 export async function POST(request: Request) {
   if (!(await requireAdmin())) {
@@ -22,11 +20,8 @@ export async function POST(request: Request) {
 
   const extension = file.name.split(".").pop() ?? "png";
   const fileName = `${makeId(file.name.replace(/\.[^.]+$/, ""))}-${Date.now()}.${extension}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
   const bytes = Buffer.from(await file.arrayBuffer());
+  const url = await uploadProductImage(fileName, bytes, file.type);
 
-  await mkdir(uploadDir, { recursive: true });
-  await writeFile(path.join(uploadDir, fileName), bytes);
-
-  return NextResponse.json({ url: `/uploads/${fileName}` });
+  return NextResponse.json({ url });
 }
