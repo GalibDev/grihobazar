@@ -848,12 +848,33 @@ function Brands({ onSeeAll }: { onSeeAll: () => void }) {
 
 function ProductSection(props: { section: ProductSectionData; cart: Record<string, CartItem>; wishlist: Record<string, Product>; showLoadMore?: boolean; onLoadMore?: () => void; onAction?: () => void; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
   const { section, showLoadMore, onLoadMore, onAction } = props;
+  const isJustForYou = section.title === "Just For You";
   return (
     <section id={section.title === "Just For You" ? "products" : undefined} className="pt-8 lg:pt-14">
       <SectionHeader title={section.title} action={section.action} onAction={onAction} />
-      <ProductGrid {...props} products={section.products} />
+      {isJustForYou ? <JustForYouGrid {...props} products={section.products} /> : <ProductGrid {...props} products={section.products} />}
       {showLoadMore ? <button type="button" onClick={onLoadMore} className="mx-auto mt-8 block rounded-full border-2 border-brand-orange px-10 py-4 text-lg font-semibold text-brand-orange">LOAD MORE</button> : null}
     </section>
+  );
+}
+
+function JustForYouGrid(props: ProductActions & { products: Product[] }) {
+  return (
+    <div className="grid grid-cols-2 gap-4 pt-6 lg:grid-cols-[repeat(auto-fill,219px)] lg:justify-between lg:gap-[28px]">
+      {props.products.map((product) => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          quantity={props.cart[product.id]?.quantity ?? 0}
+          wished={Boolean(props.wishlist[product.id])}
+          onAdd={props.onAdd}
+          onQuantity={props.onQuantity}
+          onDetails={props.onDetails}
+          onBuy={props.onBuy}
+          onWishlist={props.onWishlist}
+        />
+      ))}
+    </div>
   );
 }
 
