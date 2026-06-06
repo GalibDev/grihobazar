@@ -157,7 +157,7 @@ export default function CollectionPage() {
             </div>
 
             {filteredProducts.length ? (
-              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-[repeat(auto-fill,219px)] xl:justify-between">
                 {filteredProducts.map((product) => <CollectionProductCard key={product.id} product={product} />)}
               </div>
             ) : (
@@ -203,20 +203,20 @@ function FilterPanel({ title, children }: { title: string; children: ReactNode }
 function CollectionProductCard({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
   return (
-    <article className="relative overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white">
-      {product.badge ? <span className="absolute right-4 top-5 z-[1] rounded bg-[#35c486] px-2 py-1 text-sm font-semibold text-white">{product.badge}</span> : null}
+    <article className="relative flex min-h-[360px] flex-col overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white xl:h-[332px] xl:min-h-[332px]">
+      {product.badge ? <span className="absolute right-3 top-4 z-[1] rounded bg-[#35c486] px-2 py-1 text-xs font-semibold text-white">{product.badge}</span> : null}
       <Link href={`/products/${product.id}`} className="block">
-        <div className="grid h-[280px] place-items-center p-5">
+        <div className="grid h-[190px] place-items-center p-4 xl:h-[174px] xl:p-5">
           <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
         </div>
-        <h2 className="min-h-[64px] px-4 text-[23px] font-medium leading-tight">{product.title}</h2>
+        <h2 className="min-h-[48px] overflow-hidden px-3 text-[18px] font-medium leading-tight xl:min-h-[46px] xl:text-[20px]">{product.title}</h2>
       </Link>
-      <div className="mt-2 flex items-center gap-3 px-4">
+      <div className="mt-2 flex items-center gap-2 px-3">
         <strong className="text-[22px] font-extrabold text-brand-orange">{formatPrice(product.price)}</strong>
-        {product.oldPrice ? <span className="text-lg text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
+        {product.oldPrice ? <span className="text-base text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
       </div>
-      <div className="p-4">
-        <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="inline-flex h-[52px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-lg font-bold text-brand-orange">
+      <div className="mt-auto p-3">
+        <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="inline-flex h-[45px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-bold text-brand-orange">
           <ShoppingCart className="h-5 w-5" />
           {added ? "Added" : "Add To Cart"}
         </button>

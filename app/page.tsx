@@ -825,8 +825,8 @@ function ProductGrid(props: { products: Product[]; cart: Record<string, CartItem
       items={props.products}
       mobileItemsPerPage={2}
       desktopItemsPerPage={5}
-      itemClassName="w-[47%] min-w-[47%] lg:w-[18.8%] lg:min-w-[18.8%]"
-      trackClassName="gap-4 pt-6 lg:gap-7"
+      itemClassName="w-[47%] min-w-[47%] lg:w-[219px] lg:min-w-[219px]"
+      trackClassName="gap-4 pt-6 lg:gap-5"
       autoplay
       renderItem={(product) => <ProductCard key={product.id} product={product} quantity={props.cart[product.id]?.quantity ?? 0} wished={Boolean(props.wishlist[product.id])} onAdd={props.onAdd} onQuantity={props.onQuantity} onDetails={props.onDetails} onBuy={props.onBuy} onWishlist={props.onWishlist} />}
     />
@@ -902,28 +902,30 @@ function TopSellingCard({ product, quantity, wished, onAdd, onQuantity, onDetail
 function ProductCard({ product, quantity, wished, onAdd, onQuantity, onDetails, onBuy, onWishlist }: { product: Product; quantity: number; wished: boolean; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
   const disabled = product.stock === "out";
   return (
-    <article className="relative overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white">
+    <article className="relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-[5px] border border-[#d7d7d7] bg-white lg:h-[332px] lg:min-h-[332px]">
       {product.badge ? <Badge label={product.badge} tone={product.badgeTone} /> : null}
-      <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-3 top-3 z-[1] grid h-9 w-9 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
-        <Heart className={wished ? "h-5 w-5 fill-current" : "h-5 w-5"} />
+      <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-3 top-3 z-[1] grid h-8 w-8 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
+        <Heart className={wished ? "h-4 w-4 fill-current" : "h-4 w-4"} />
       </button>
-      <button type="button" onClick={() => onDetails(product)} className="grid h-[190px] w-full place-items-center p-3 lg:h-[270px] lg:p-6">
+      <button type="button" onClick={() => onDetails(product)} className="grid h-[190px] w-full shrink-0 place-items-center p-3 lg:h-[174px] lg:p-5">
         <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
       </button>
-      <div className="px-3 pb-3 lg:px-5 lg:pb-5">
+      <div className="flex min-h-0 flex-1 flex-col px-3 pb-3 lg:px-3 lg:pb-3">
         <button type="button" onClick={() => onDetails(product)} className="block text-left">
-          <h3 className="min-h-[52px] text-[17px] font-semibold leading-[1.16] text-brand-ink lg:min-h-[60px] lg:text-[24px]">{product.title}</h3>
+          <h3 className="min-h-[48px] overflow-hidden text-[17px] font-semibold leading-[1.16] text-brand-ink lg:min-h-[46px] lg:text-[20px]">{product.title}</h3>
         </button>
-        <div className="mb-4 mt-3 flex flex-wrap items-center gap-2">
-          <strong className="text-[20px] font-extrabold text-brand-orange lg:text-[24px]">{formatPrice(product.price)}</strong>
-          {product.oldPrice ? <span className="text-base text-[#8b8b8b] line-through">{formatPrice(product.oldPrice)}</span> : null}
+        <div className="mb-3 mt-2 flex flex-wrap items-center gap-2">
+          <strong className="text-[20px] font-extrabold text-brand-orange lg:text-[22px]">{formatPrice(product.price)}</strong>
+          {product.oldPrice ? <span className="text-base text-[#8b8b8b] line-through lg:text-[16px]">{formatPrice(product.oldPrice)}</span> : null}
         </div>
         {disabled ? (
-          <button type="button" disabled className="h-11 w-full rounded bg-[#9ca3af] text-base font-bold text-white">Stock Out</button>
+          <button type="button" disabled className="mt-auto h-11 w-full rounded bg-[#9ca3af] text-base font-bold text-white">Stock Out</button>
         ) : quantity > 0 ? (
-          <QuantityControl quantity={quantity} onMinus={() => onQuantity(product, quantity - 1)} onPlus={() => onQuantity(product, quantity + 1)} />
+          <div className="mt-auto">
+            <QuantityControl quantity={quantity} onMinus={() => onQuantity(product, quantity - 1)} onPlus={() => onQuantity(product, quantity + 1)} />
+          </div>
         ) : (
-          <button type="button" onClick={() => onAdd(product)} className="flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-bold text-brand-orange lg:h-[58px] lg:text-lg">
+          <button type="button" onClick={() => onAdd(product)} className="mt-auto flex h-11 w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-bold text-brand-orange lg:h-[45px] lg:text-[16px]">
             <ShoppingCart className="h-5 w-5" /> Add To Cart
           </button>
         )}

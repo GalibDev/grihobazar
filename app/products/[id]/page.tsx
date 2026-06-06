@@ -151,7 +151,7 @@ export default function ProductDetailsPage() {
             <h2 className="text-[30px] font-bold">Related Products</h2>
             <Link href={`/collections/${slugify(product.category)}`} className="text-xl font-semibold text-brand-orange">More Products →</Link>
           </div>
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fill,219px)] lg:justify-between">
             {relatedProducts.map((item) => <RelatedProductCard key={item.id} product={item} />)}
           </div>
         </section>
@@ -218,19 +218,19 @@ function ReviewBox() {
 function RelatedProductCard({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
   return (
-    <article className="relative rounded-[5px] border border-[#d7d7d7] bg-white p-3">
-      {product.badge ? <span className="absolute right-4 top-5 rounded bg-[#35c486] px-2 py-1 text-sm font-semibold text-white">{product.badge}</span> : null}
+    <article className="relative flex min-h-[360px] flex-col rounded-[5px] border border-[#d7d7d7] bg-white p-3 lg:h-[332px] lg:min-h-[332px]">
+      {product.badge ? <span className="absolute right-3 top-4 rounded bg-[#35c486] px-2 py-1 text-xs font-semibold text-white">{product.badge}</span> : null}
       <Link href={`/products/${product.id}`} className="block">
-        <div className="grid h-[260px] place-items-center p-4">
+        <div className="grid h-[190px] place-items-center p-4 lg:h-[162px]">
           <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
         </div>
-        <h3 className="min-h-[60px] text-[24px] font-medium leading-tight">{product.title}</h3>
+        <h3 className="min-h-[48px] overflow-hidden text-[18px] font-medium leading-tight lg:min-h-[46px] lg:text-[20px]">{product.title}</h3>
       </Link>
-      <div className="mt-3 flex items-center gap-3">
-        <strong className="text-[24px] font-extrabold text-brand-orange">{formatPrice(product.price)}</strong>
-        {product.oldPrice ? <span className="text-lg text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
+      <div className="mt-2 flex items-center gap-2">
+        <strong className="text-[22px] font-extrabold text-brand-orange">{formatPrice(product.price)}</strong>
+        {product.oldPrice ? <span className="text-base text-[#9a9a9a] line-through">{formatPrice(product.oldPrice)}</span> : null}
       </div>
-      <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="mt-5 inline-flex h-[58px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-lg font-bold text-brand-orange">
+      <button type="button" onClick={() => { addCartItem(product); setAdded(true); }} className="mt-auto inline-flex h-[45px] w-full items-center justify-center gap-2 rounded border border-brand-orange text-base font-bold text-brand-orange">
         <ShoppingCart className="h-5 w-5" />
         {added ? "Added" : "Add To Cart"}
       </button>
