@@ -54,6 +54,15 @@ type ProductSectionData = {
 
 type CartItem = Product & { quantity: number };
 type ModalType = "signin" | "track" | "wishlist" | "checkout" | "details" | "search" | "about" | null;
+type ProductActions = {
+  cart: Record<string, CartItem>;
+  wishlist: Record<string, Product>;
+  onAdd: (product: Product) => void;
+  onQuantity: (product: Product, quantity: number) => void;
+  onDetails: (product: Product) => void;
+  onBuy: (product: Product) => void;
+  onWishlist: (product: Product) => void;
+};
 
 const formatPrice = (price: number) => `৳${price.toLocaleString("en-US")}`;
 const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -498,7 +507,7 @@ export default function HomePage() {
 
         <section className="relative text-center">
           <h1 className="mb-[18px] mt-[22px] text-[27px] font-bold leading-tight lg:mb-7 lg:mt-12 lg:text-[34px]">Top Selling Products</h1>
-          <ProductGrid
+          <TopSellingGrid
             products={storeProducts.filter((product) => topSellingIds.includes(product.id))}
             cart={cart}
             wishlist={wishlist}
@@ -821,6 +830,72 @@ function ProductGrid(props: { products: Product[]; cart: Record<string, CartItem
       autoplay
       renderItem={(product) => <ProductCard key={product.id} product={product} quantity={props.cart[product.id]?.quantity ?? 0} wished={Boolean(props.wishlist[product.id])} onAdd={props.onAdd} onQuantity={props.onQuantity} onDetails={props.onDetails} onBuy={props.onBuy} onWishlist={props.onWishlist} />}
     />
+  );
+}
+
+function TopSellingGrid(props: ProductActions & { products: Product[] }) {
+  const products = props.products.slice(0, 4);
+  return (
+    <div className="grid gap-[18px] text-left lg:grid-cols-2 lg:gap-x-[29px] lg:gap-y-[29px]">
+      {products.map((product) => (
+        <TopSellingCard
+          key={product.id}
+          product={product}
+          quantity={props.cart[product.id]?.quantity ?? 0}
+          wished={Boolean(props.wishlist[product.id])}
+          onAdd={props.onAdd}
+          onQuantity={props.onQuantity}
+          onDetails={props.onDetails}
+          onBuy={props.onBuy}
+          onWishlist={props.onWishlist}
+        />
+      ))}
+    </div>
+  );
+}
+
+function TopSellingCard({ product, quantity, wished, onAdd, onQuantity, onDetails, onBuy, onWishlist }: { product: Product; quantity: number; wished: boolean; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
+  const disabled = product.stock === "out";
+  const discountBadge = product.badge?.toLowerCase().startsWith("save") ? product.badge : "";
+  const topBadge = product.badge && !discountBadge ? product.badge : "";
+  return (
+    <article className="relative grid min-h-[250px] overflow-hidden rounded-[5px] bg-white shadow-soft lg:h-[304px] lg:grid-cols-[52%_48%]">
+      {topBadge ? <Badge label={topBadge} tone={product.badgeTone} /> : null}
+      <button type="button" aria-label="Toggle wishlist" onClick={() => onWishlist(product)} className={`absolute left-4 top-4 z-[1] grid h-9 w-9 place-items-center rounded-full bg-white shadow-soft ${wished ? "text-brand-orange" : "text-[#777]"}`}>
+        <Heart className={wished ? "h-5 w-5 fill-current" : "h-5 w-5"} />
+      </button>
+      <button type="button" onClick={() => onDetails(product)} className="grid h-[220px] place-items-center p-5 lg:h-full lg:p-8">
+        <img className="max-h-full max-w-full object-contain" src={product.image} alt={product.title} />
+      </button>
+      <div className="grid content-center px-5 pb-5 lg:px-5 lg:pb-0 lg:pr-6">
+        <button type="button" onClick={() => onDetails(product)} className="block text-left">
+          <h3 className="text-[24px] font-semibold leading-tight text-brand-ink lg:min-h-[64px] lg:text-[26px]">{product.title}</h3>
+        </button>
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          <strong className="text-[25px] font-extrabold leading-none text-brand-orange">{formatPrice(product.price)}</strong>
+          {product.oldPrice ? <span className="text-[22px] text-[#8b8b8b] line-through">{formatPrice(product.oldPrice)}</span> : null}
+        </div>
+        {discountBadge ? <span className="mt-4 w-fit rounded-full bg-[#b6dc1e] px-4 py-1 text-[16px] font-semibold text-[#111]">{discountBadge}</span> : null}
+        <div className="mt-8 grid grid-cols-[1fr_0.85fr] gap-3">
+          {disabled ? (
+            <button type="button" disabled className="col-span-2 h-[60px] rounded bg-[#9ca3af] text-lg font-bold text-white">Stock Out</button>
+          ) : quantity > 0 ? (
+            <div className="col-span-2">
+              <QuantityControl quantity={quantity} onMinus={() => onQuantity(product, quantity - 1)} onPlus={() => onQuantity(product, quantity + 1)} />
+            </div>
+          ) : (
+            <>
+              <button type="button" onClick={() => onAdd(product)} className="flex h-[60px] items-center justify-center gap-2 rounded border border-brand-orange text-[18px] font-bold leading-tight text-brand-orange">
+                <ShoppingCart className="h-5 w-5" /> <span>Add To<br />Cart</span>
+              </button>
+              <button type="button" onClick={() => onBuy(product)} className="flex h-[60px] items-center justify-center gap-2 rounded bg-brand-orange text-[18px] font-bold leading-tight text-white">
+                <ShoppingCart className="h-5 w-5" /> <span>Buy<br />now</span>
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </article>
   );
 }
 
