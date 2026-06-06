@@ -860,7 +860,7 @@ function ProductSection(props: { section: ProductSectionData; cart: Record<strin
 
 function JustForYouGrid(props: ProductActions & { products: Product[] }) {
   return (
-    <div className="grid grid-cols-2 gap-4 pt-6 lg:grid-cols-[repeat(auto-fill,219px)] lg:justify-between lg:gap-[28px]">
+    <div className="grid grid-cols-2 gap-4 pt-6 lg:grid-cols-5 lg:gap-5">
       {props.products.map((product) => (
         <ProductCard
           key={product.id}
