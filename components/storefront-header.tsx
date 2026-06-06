@@ -69,15 +69,15 @@ export function StorefrontHeader() {
   return (
     <>
       <header className="hidden bg-white lg:block">
-        <div className="mx-auto grid h-[102px] max-w-[1760px] grid-cols-[300px_1fr_500px] items-center gap-8 px-8">
+        <div className="mx-auto grid h-[130px] max-w-[1766px] grid-cols-[370px_minmax(360px,670px)_1fr] items-center gap-10 px-0">
           <Link href="/" aria-label="Griho Bazar home">
-            <img className="w-[170px]" src="https://backoffice.ghorerbazar.com/company_logo/qJaKf1768887846.png" alt="Ghorer Bazar" />
+            <img className="w-[180px]" src="https://backoffice.ghorerbazar.com/company_logo/qJaKf1768887846.png" alt="Ghorer Bazar" />
           </Link>
           <label className="relative block">
-            <input className="h-[58px] w-full rounded-lg bg-[#f5f5f5] px-6 pr-14 text-[18px] outline-none focus:ring-2 focus:ring-brand-orange/30" placeholder="Search in..." />
-            <Search className="absolute right-5 top-1/2 h-8 w-8 -translate-y-1/2 text-brand-ink" />
+            <input className="h-[70px] w-full rounded-lg bg-[#f5f5f5] px-6 pr-16 text-[20px] outline-none focus:ring-2 focus:ring-brand-orange/30" placeholder="Search in..." />
+            <Search className="absolute right-5 top-1/2 h-9 w-9 -translate-y-1/2 text-brand-ink" />
           </label>
-          <div className="flex items-center justify-end gap-7 text-brand-ink">
+          <div className="flex items-center justify-end gap-8 text-brand-ink">
             <HeaderAction href="/track/order" icon={<MapPin />} label="Track Order" />
             <HeaderAction href="/admin/login" icon={<UserRound />} label="Sign In" />
             <HeaderAction href="/" icon={<Heart />} label="Wishlist" />
@@ -88,7 +88,7 @@ export function StorefrontHeader() {
       </header>
 
       <nav className="sticky top-0 z-30 bg-[#002c26] text-white">
-        <div className="mx-auto flex h-[70px] max-w-[1760px] items-center gap-8 overflow-x-auto px-8 text-[20px] font-medium [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="mx-auto flex h-[98px] max-w-[1766px] items-center justify-between gap-6 overflow-x-auto px-0 text-[20px] font-medium [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => (
             <div key={item.title} className="group relative flex h-full shrink-0 items-center">
               <Link href={item.href} className="flex items-center gap-2 hover:text-brand-orange">
@@ -96,7 +96,7 @@ export function StorefrontHeader() {
                 {item.children ? <ChevronDown className="h-5 w-5" /> : null}
               </Link>
               {item.children ? (
-                <div className="invisible fixed top-[172px] z-40 min-w-[320px] bg-white py-3 text-[20px] font-normal text-[#666] opacity-0 shadow-float transition group-hover:visible group-hover:opacity-100">
+                <div className="invisible fixed top-[228px] z-40 min-w-[320px] bg-white py-3 text-[20px] font-normal text-[#666] opacity-0 shadow-float transition group-hover:visible group-hover:opacity-100">
                   {item.children.map((child) => (
                     <Link key={child} href={`/collections/${slugify(child)}`} className="block px-7 py-3 hover:bg-brand-orange hover:text-white">
                       {child}
@@ -122,10 +122,10 @@ export function StorefrontHeader() {
 
 function HeaderAction({ href, icon, label, count }: { href: string; icon: ReactNode; label: string; count?: number }) {
   return (
-    <Link href={href} className="relative grid justify-items-center gap-1 text-[18px]">
-      <span className="[&>svg]:h-8 [&>svg]:w-8 [&>svg]:stroke-[2]">{icon}</span>
+    <Link href={href} className="relative grid justify-items-center gap-1 text-[20px]">
+      <span className="[&>svg]:h-9 [&>svg]:w-9 [&>svg]:stroke-[2]">{icon}</span>
       {typeof count === "number" && count > 0 ? <b className="absolute right-4 top-0 grid h-6 min-w-6 place-items-center rounded-full bg-brand-orange px-1 text-sm text-white">{count}</b> : null}
-      <span>{label}</span>
+      <span className="whitespace-nowrap">{label}</span>
     </Link>
   );
 }

@@ -490,7 +490,7 @@ export default function HomePage() {
       <DesktopHeader cartCount={cartCount} onModal={setModal} onCart={() => setCartOpen(true)} query={query} setQuery={setQuery} />
       <DesktopNav onCategory={jumpToCategory} />
 
-      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1744px] lg:px-6 lg:pb-24 lg:pt-8">
+      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1766px] lg:px-0 lg:pb-24 lg:pt-[30px]">
         <Hero onCategory={jumpToCategory} />
         <FeaturedCategories onCategory={jumpToCategory} />
 
@@ -557,7 +557,7 @@ function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCo
 
   return (
     <header className="hidden border-b border-[#ececec] bg-white lg:block">
-      <div className="mx-auto grid h-[130px] max-w-[1744px] grid-cols-[260px_minmax(360px,670px)_1fr] items-center gap-10 px-6">
+      <div className="mx-auto grid h-[130px] max-w-[1766px] grid-cols-[370px_minmax(360px,670px)_1fr] items-center gap-10 px-0">
         <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <img className="w-[180px]" src="https://backoffice.ghorerbazar.com/company_logo/qJaKf1768887846.png" alt="Ghorer Bazar" />
         </button>
@@ -572,7 +572,7 @@ function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCo
             <button key={action.label} type="button" onClick={action.onClick} className="relative grid justify-items-center text-brand-ink">
               <span className="[&>svg]:h-9 [&>svg]:w-9 [&>svg]:stroke-[1.9]">{action.icon}</span>
               {typeof action.count === "number" ? <Counter count={action.count} /> : null}
-              <span className="mt-1 text-xl leading-none">{action.label}</span>
+              <span className="mt-1 whitespace-nowrap text-xl leading-none">{action.label}</span>
             </button>
           ))}
         </div>
@@ -584,9 +584,9 @@ function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCo
 function DesktopNav({ onCategory }: { onCategory: (category: string) => void }) {
   return (
     <nav className="hidden bg-[#052925] text-white lg:block">
-      <div className="mx-auto flex h-[98px] max-w-[1744px] items-center justify-start gap-8 overflow-x-auto px-5 xl:justify-between xl:gap-6 xl:overflow-visible xl:px-6">
+      <div className="mx-auto flex h-[98px] max-w-[1766px] items-center justify-start gap-8 overflow-x-auto px-0 xl:justify-between xl:gap-6 xl:overflow-visible">
         {menuItems.map((label) => (
-          <button key={label} type="button" onClick={() => onCategory(label)} className="flex shrink-0 items-center gap-1 text-[18px] font-semibold leading-none xl:gap-2 xl:text-[22px]">
+          <button key={label} type="button" onClick={() => onCategory(label)} className="flex shrink-0 items-center gap-1 text-[18px] font-semibold leading-none xl:gap-2 xl:text-[20px]">
             <span>{label}</span>
             {["Honey", "Dates", "Spices", "Nuts & Seeds", "Beverage", "Flours & Lentils"].includes(label) ? <ChevronRight className="h-4 w-4 shrink-0 rotate-90 xl:h-5 xl:w-5" /> : null}
           </button>
