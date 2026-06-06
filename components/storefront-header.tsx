@@ -69,15 +69,15 @@ export function StorefrontHeader() {
   return (
     <>
       <header className="hidden bg-white lg:block">
-        <div className="mx-auto grid h-[130px] max-w-[1766px] grid-cols-[370px_minmax(360px,670px)_1fr] items-center gap-10 px-0">
+        <div className="mx-auto grid h-[85px] max-w-[1200px] grid-cols-[140px_500px_400px] items-center justify-between gap-0 px-0">
           <Link href="/" aria-label="Griho Bazar home">
-            <img className="w-[180px]" src="https://backoffice.ghorerbazar.com/company_logo/qJaKf1768887846.png" alt="Ghorer Bazar" />
+            <img className="w-[140px]" src="https://backoffice.ghorerbazar.com/company_logo/qJaKf1768887846.png" alt="Ghorer Bazar" />
           </Link>
           <label className="relative block">
-            <input className="h-[70px] w-full rounded-lg bg-[#f5f5f5] px-6 pr-16 text-[20px] outline-none focus:ring-2 focus:ring-brand-orange/30" placeholder="Search in..." />
-            <Search className="absolute right-5 top-1/2 h-9 w-9 -translate-y-1/2 text-brand-ink" />
+            <input className="h-[45px] w-full rounded bg-[#f5f5f5] px-5 pr-12 text-[14px] outline-none focus:ring-2 focus:ring-brand-orange/30" placeholder="Search in..." />
+            <Search className="absolute right-4 top-1/2 h-6 w-6 -translate-y-1/2 text-brand-ink" />
           </label>
-          <div className="flex items-center justify-end gap-8 text-brand-ink">
+          <div className="flex h-[45px] items-center justify-between text-brand-ink">
             <HeaderAction href="/track/order" icon={<MapPin />} label="Track Order" />
             <HeaderAction href="/admin/login" icon={<UserRound />} label="Sign In" />
             <HeaderAction href="/" icon={<Heart />} label="Wishlist" />
@@ -88,15 +88,15 @@ export function StorefrontHeader() {
       </header>
 
       <nav className="sticky top-0 z-30 bg-[#002c26] text-white">
-        <div className="mx-auto flex h-[98px] max-w-[1766px] items-center justify-between gap-6 overflow-x-auto px-0 text-[20px] font-medium [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="mx-auto flex h-[50px] max-w-[1200px] items-center justify-between gap-4 overflow-x-auto px-0 text-[14px] font-medium [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => (
             <div key={item.title} className="group relative flex h-full shrink-0 items-center">
               <Link href={item.href} className="flex items-center gap-2 hover:text-brand-orange">
                 {item.title}
-                {item.children ? <ChevronDown className="h-5 w-5" /> : null}
+                {item.children ? <ChevronDown className="h-3.5 w-3.5" /> : null}
               </Link>
               {item.children ? (
-                <div className="invisible fixed top-[228px] z-40 min-w-[320px] bg-white py-3 text-[20px] font-normal text-[#666] opacity-0 shadow-float transition group-hover:visible group-hover:opacity-100">
+                <div className="invisible fixed top-[135px] z-40 min-w-[260px] bg-white py-2 text-[14px] font-normal text-[#666] opacity-0 shadow-float transition group-hover:visible group-hover:opacity-100">
                   {item.children.map((child) => (
                     <Link key={child} href={`/collections/${slugify(child)}`} className="block px-7 py-3 hover:bg-brand-orange hover:text-white">
                       {child}
@@ -109,12 +109,12 @@ export function StorefrontHeader() {
         </div>
       </nav>
 
-      <Link href="/cart" className="fixed right-0 top-1/2 z-30 hidden -translate-y-1/2 overflow-hidden rounded-l-lg bg-white text-center shadow-float lg:block">
-        <span className="grid bg-brand-orange px-4 py-3 text-white">
-          <ShoppingCart className="mx-auto h-7 w-7" />
-          <span className="text-base font-semibold">{cartCount} Items</span>
+      <Link href="/cart" className="fixed right-0 top-1/2 z-30 hidden w-[70px] -translate-y-1/2 overflow-hidden rounded-l-lg bg-white text-center shadow-float lg:block">
+        <span className="grid h-[56px] bg-brand-orange px-1 py-2 text-white">
+          <ShoppingCart className="mx-auto h-5 w-5" />
+          <span className="text-sm font-semibold">{cartCount} Items</span>
         </span>
-        <strong className="block px-4 py-2 text-lg text-brand-orange">{formatPrice(cartTotal)}</strong>
+        <strong className="block h-[29px] px-1 py-1.5 text-base text-brand-orange">{formatPrice(cartTotal)}</strong>
       </Link>
     </>
   );
@@ -122,8 +122,8 @@ export function StorefrontHeader() {
 
 function HeaderAction({ href, icon, label, count }: { href: string; icon: ReactNode; label: string; count?: number }) {
   return (
-    <Link href={href} className="relative grid justify-items-center gap-1 text-[20px]">
-      <span className="[&>svg]:h-9 [&>svg]:w-9 [&>svg]:stroke-[2]">{icon}</span>
+    <Link href={href} className="relative grid justify-items-center gap-0.5 text-[13px]">
+      <span className="[&>svg]:h-6 [&>svg]:w-6 [&>svg]:stroke-[2]">{icon}</span>
       {typeof count === "number" && count > 0 ? <b className="absolute right-4 top-0 grid h-6 min-w-6 place-items-center rounded-full bg-brand-orange px-1 text-sm text-white">{count}</b> : null}
       <span className="whitespace-nowrap">{label}</span>
     </Link>

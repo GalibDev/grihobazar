@@ -490,7 +490,7 @@ export default function HomePage() {
       <DesktopHeader cartCount={cartCount} onModal={setModal} onCart={() => setCartOpen(true)} query={query} setQuery={setQuery} />
       <DesktopNav onCategory={jumpToCategory} />
 
-      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1766px] lg:px-0 lg:pb-24 lg:pt-[30px]">
+      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1200px] lg:px-0 lg:pb-24 lg:pt-10">
         <Hero onCategory={jumpToCategory} />
         <FeaturedCategories onCategory={jumpToCategory} />
 
@@ -557,22 +557,22 @@ function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCo
 
   return (
     <header className="hidden border-b border-[#ececec] bg-white lg:block">
-      <div className="mx-auto grid h-[130px] max-w-[1766px] grid-cols-[370px_minmax(360px,670px)_1fr] items-center gap-10 px-0">
+      <div className="mx-auto grid h-[85px] max-w-[1200px] grid-cols-[140px_500px_400px] items-center justify-between gap-0 px-0">
         <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-          <img className="w-[180px]" src="https://backoffice.ghorerbazar.com/company_logo/qJaKf1768887846.png" alt="Ghorer Bazar" />
+          <img className="w-[140px]" src="https://backoffice.ghorerbazar.com/company_logo/qJaKf1768887846.png" alt="Ghorer Bazar" />
         </button>
         <form className="relative" onSubmit={(event) => { event.preventDefault(); onModal("search"); }}>
-          <input aria-label="Search products" value={query} onChange={(event) => setQuery(event.target.value)} className="h-[72px] w-full rounded-xl bg-[#f4f4f4] px-6 pr-16 text-[21px] outline-none" placeholder="Search in..." />
-          <button type="submit" aria-label="Search" className="absolute right-5 top-1/2 -translate-y-1/2 text-brand-ink">
-            <Search className="h-9 w-9 stroke-[2]" />
+          <input aria-label="Search products" value={query} onChange={(event) => setQuery(event.target.value)} className="h-[45px] w-full rounded bg-[#f4f4f4] px-5 pr-12 text-[14px] outline-none" placeholder="Search in..." />
+          <button type="submit" aria-label="Search" className="absolute right-4 top-1/2 -translate-y-1/2 text-brand-ink">
+            <Search className="h-6 w-6 stroke-[2]" />
           </button>
         </form>
-        <div className="flex items-center justify-end gap-8">
+        <div className="flex h-[45px] items-center justify-between">
           {actions.map((action) => (
             <button key={action.label} type="button" onClick={action.onClick} className="relative grid justify-items-center text-brand-ink">
-              <span className="[&>svg]:h-9 [&>svg]:w-9 [&>svg]:stroke-[1.9]">{action.icon}</span>
+              <span className="[&>svg]:h-6 [&>svg]:w-6 [&>svg]:stroke-[1.9]">{action.icon}</span>
               {typeof action.count === "number" ? <Counter count={action.count} /> : null}
-              <span className="mt-1 whitespace-nowrap text-xl leading-none">{action.label}</span>
+              <span className="mt-0.5 whitespace-nowrap text-[13px] leading-none">{action.label}</span>
             </button>
           ))}
         </div>
@@ -584,11 +584,11 @@ function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCo
 function DesktopNav({ onCategory }: { onCategory: (category: string) => void }) {
   return (
     <nav className="hidden bg-[#052925] text-white lg:block">
-      <div className="mx-auto flex h-[98px] max-w-[1766px] items-center justify-start gap-8 overflow-x-auto px-0 xl:justify-between xl:gap-6 xl:overflow-visible">
+      <div className="mx-auto flex h-[50px] max-w-[1200px] items-center justify-between gap-4 overflow-x-auto px-0">
         {menuItems.map((label) => (
-          <button key={label} type="button" onClick={() => onCategory(label)} className="flex shrink-0 items-center gap-1 text-[18px] font-semibold leading-none xl:gap-2 xl:text-[20px]">
+          <button key={label} type="button" onClick={() => onCategory(label)} className="flex shrink-0 items-center gap-1 text-[14px] font-semibold leading-none">
             <span>{label}</span>
-            {["Honey", "Dates", "Spices", "Nuts & Seeds", "Beverage", "Flours & Lentils"].includes(label) ? <ChevronRight className="h-4 w-4 shrink-0 rotate-90 xl:h-5 xl:w-5" /> : null}
+            {["Honey", "Dates", "Spices", "Nuts & Seeds", "Beverage", "Flours & Lentils"].includes(label) ? <ChevronRight className="h-3.5 w-3.5 shrink-0 rotate-90" /> : null}
           </button>
         ))}
       </div>
@@ -612,7 +612,7 @@ function Hero({ onCategory }: { onCategory: (category: string) => void }) {
   };
 
   return (
-    <section className="relative overflow-hidden rounded-[5px] bg-[#111] lg:grid lg:grid-cols-[2.05fr_1fr] lg:gap-7 lg:bg-transparent">
+    <section className="relative overflow-hidden rounded-[5px] bg-[#111] lg:grid lg:h-[390px] lg:grid-cols-[750px_430px] lg:gap-5 lg:bg-transparent">
       <div className="relative overflow-hidden rounded-[8px] bg-[#111]">
         <div
           className="flex transition-transform duration-500 ease-out"
@@ -628,13 +628,13 @@ function Hero({ onCategory }: { onCategory: (category: string) => void }) {
             >
               <picture>
                 <source media="(min-width: 1024px)" srcSet={slide.desktop} />
-                <img className="block aspect-[500/280] w-full object-cover lg:aspect-[1000/400]" src={slide.mobile} alt={slide.alt} />
+                <img className="block aspect-[500/280] w-full object-cover lg:h-[390px] lg:aspect-auto" src={slide.mobile} alt={slide.alt} />
               </picture>
             </button>
           ))}
         </div>
         <SliderDots
-          className="absolute bottom-[26px] left-7"
+          className="absolute bottom-[9px] left-7"
           count={heroSlides.length}
           active={activeSlide}
           onSelect={setActiveSlide}
@@ -643,8 +643,8 @@ function Hero({ onCategory }: { onCategory: (category: string) => void }) {
       <button type="button" onClick={() => onCategory("Honey")} className="hidden h-full w-full lg:block">
         <img className="h-full w-full rounded-[8px] object-cover" src="https://backoffice.ghorerbazar.com/banner/ECXVc1780379887-500x410.png" alt="Follow us on Facebook" />
       </button>
-      <button type="button" onClick={() => move(-1)} aria-label="Previous" className="absolute left-0 top-[47%] grid h-[38px] w-[38px] -translate-y-1/2 place-items-center bg-white text-brand-orange"><ArrowLeft className="h-[22px] w-[22px]" /></button>
-      <button type="button" onClick={() => move(1)} aria-label="Next" className="absolute right-0 top-[47%] grid h-[38px] w-[38px] -translate-y-1/2 place-items-center bg-white text-brand-orange"><ArrowRight className="h-[22px] w-[22px]" /></button>
+      <button type="button" onClick={() => move(-1)} aria-label="Previous" className="absolute left-0 top-1/2 grid h-[40px] w-[40px] -translate-y-1/2 place-items-center bg-white text-brand-orange"><ArrowLeft className="h-[20px] w-[20px]" /></button>
+      <button type="button" onClick={() => move(1)} aria-label="Next" className="absolute right-0 top-1/2 grid h-[40px] w-[40px] -translate-y-1/2 place-items-center bg-white text-brand-orange"><ArrowRight className="h-[20px] w-[20px]" /></button>
     </section>
   );
 }
@@ -745,7 +745,7 @@ function SlidingRail<T,>({
 function FeaturedCategories({ onCategory }: { onCategory: (category: string) => void }) {
   return (
     <section className="relative text-center">
-      <h1 className="mb-[18px] mt-[18px] text-[25px] font-bold leading-tight lg:mb-12 lg:mt-8 lg:text-[34px]">Featured Categories</h1>
+      <h1 className="mb-[18px] mt-[48px] text-[25px] font-bold leading-tight lg:mb-12 lg:mt-12 lg:text-[26px]">Featured Categories</h1>
       <SlidingRail
         items={categories}
         mobileItemsPerPage={3}
@@ -1292,19 +1292,19 @@ function Drawer({ menuOpen, setMenuOpen, onModal, onCategory, wishlistCount }: {
 
 function FloatingCart({ cartCount, cartTotal, onClick }: { cartCount: number; cartTotal: number; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="phone-edge-right fixed top-1/2 z-20 w-14 -translate-y-[20%] overflow-hidden rounded-l-[5px] bg-white shadow-float lg:w-[100px]">
-      <div className="grid place-items-center gap-0.5 bg-brand-orange px-1 py-2 text-[13px] leading-none text-white lg:py-5 lg:text-xl">
-        <ShoppingBag className="h-[21px] w-[21px] lg:h-8 lg:w-8" /><span>{cartCount} Items</span>
+    <button type="button" onClick={onClick} className="phone-edge-right fixed top-1/2 z-20 w-14 -translate-y-[20%] overflow-hidden rounded-l-[5px] bg-white shadow-float lg:w-[70px]">
+      <div className="grid h-[56px] place-items-center gap-0.5 bg-brand-orange px-1 py-2 text-[13px] leading-none text-white lg:text-sm">
+        <ShoppingBag className="h-[21px] w-[21px] lg:h-5 lg:w-5" /><span>{cartCount} Items</span>
       </div>
-      <strong className="block px-0.5 py-2 text-center text-base text-brand-orange lg:py-3 lg:text-2xl">{formatPrice(cartTotal)}</strong>
+      <strong className="block h-[29px] px-0.5 py-1.5 text-center text-base text-brand-orange lg:text-base">{formatPrice(cartTotal)}</strong>
     </button>
   );
 }
 
 function ChatButton() {
   return (
-    <a href="https://api.whatsapp.com/send?phone=8809642922922" target="_blank" rel="noreferrer" aria-label="Chat" className="phone-edge-right fixed bottom-[86px] z-[22] mr-[19px] grid h-[61px] w-[61px] place-items-center rounded-[20px] bg-brand-orange text-white lg:bottom-12 lg:mr-[30px] lg:h-[72px] lg:w-[72px]">
-      <MessageCircle className="h-[34px] w-[34px] fill-white stroke-white" />
+    <a href="https://api.whatsapp.com/send?phone=8809642922922" target="_blank" rel="noreferrer" aria-label="Chat" className="phone-edge-right fixed bottom-[86px] z-[22] mr-[19px] grid h-[61px] w-[61px] place-items-center rounded-[20px] bg-brand-orange text-white lg:bottom-12 lg:mr-[18px] lg:h-[56px] lg:w-[56px] lg:rounded-[16px]">
+      <MessageCircle className="h-[34px] w-[34px] fill-white stroke-white lg:h-7 lg:w-7" />
     </a>
   );
 }
