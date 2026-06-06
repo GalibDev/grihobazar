@@ -69,7 +69,7 @@ export function StorefrontHeader() {
   return (
     <>
       <header className="hidden bg-white lg:block">
-        <div className="mx-auto grid h-[85px] max-w-[1200px] grid-cols-[140px_500px_400px] items-center justify-between gap-0 px-0">
+        <div className="mx-auto grid h-[85px] max-w-[1200px] grid-cols-[140px_500px_400px] items-center justify-between gap-0 px-0 xl:w-[calc(100%-240px)]">
           <Link href="/" aria-label="Griho Bazar home">
             <img className="w-[140px]" src="https://backoffice.ghorerbazar.com/company_logo/qJaKf1768887846.png" alt="Ghorer Bazar" />
           </Link>
@@ -88,7 +88,7 @@ export function StorefrontHeader() {
       </header>
 
       <nav className="sticky top-0 z-30 bg-[#002c26] text-white">
-        <div className="mx-auto flex h-[50px] max-w-[1200px] items-center justify-between gap-4 overflow-x-auto px-0 text-[14px] font-medium [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="mx-auto flex h-[50px] max-w-[1200px] items-center justify-between gap-4 overflow-x-auto px-0 text-[14px] font-medium [scrollbar-width:none] xl:w-[calc(100%-240px)] [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => (
             <div key={item.title} className="group relative flex h-full shrink-0 items-center">
               <Link href={item.href} className="flex items-center gap-2 hover:text-brand-orange">

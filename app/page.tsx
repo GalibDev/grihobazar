@@ -490,7 +490,7 @@ export default function HomePage() {
       <DesktopHeader cartCount={cartCount} onModal={setModal} onCart={() => setCartOpen(true)} query={query} setQuery={setQuery} />
       <DesktopNav onCategory={jumpToCategory} />
 
-      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1200px] lg:px-0 lg:pb-24 lg:pt-10">
+      <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1200px] lg:px-0 lg:pb-24 lg:pt-12 xl:w-[calc(100%-240px)]">
         <Hero onCategory={jumpToCategory} />
         <FeaturedCategories onCategory={jumpToCategory} />
 
