@@ -22,6 +22,7 @@ const defaultCategories: Category[] = [
   { title: "Spices", slug: "spices", image: "https://backoffice.ghorerbazar.com/category_images/hXyU71774766413.png" },
   { title: "Nuts & Seeds", slug: "nuts-seeds", image: "https://backoffice.ghorerbazar.com/category_images/5u39t1774766425.png" },
   { title: "Beverage", slug: "beverage", image: "/placeholders/product.svg" },
+  { title: "Rice", slug: "rice", image: "/placeholders/product.svg" },
   { title: "Mango", slug: "mango", image: "https://backoffice.ghorerbazar.com/productImages/gOT1X1779006694.jpg" },
   { title: "Flours & Lentils", slug: "flours-lentils", image: "https://backoffice.ghorerbazar.com/productImages/XA6LK1767439665.jpg" },
   { title: "Exclusive Combo Deals", slug: "exclusive-combo-deals", image: "/placeholders/product.svg" },
@@ -197,6 +198,18 @@ const liveFloursLentilsSeedProducts: Product[] = [
   { id: "kabuli-chola-1kg", title: "Kabuli Chola 1kg", category: "Flours & Lentils", image: "https://backoffice.ghorerbazar.com/productImages/cejW21767437388.jpg", price: 380, stock: "in" },
 ];
 
+const liveRiceSeedProducts: Product[] = [
+  { id: "lal-chal-1-kg", title: "Lal Chal 1 kg", category: "Rice", image: "https://backoffice.ghorerbazar.com/productImages/iXg411779701719.jpeg", price: 125, stock: "in" },
+  { id: "lal-chal-5-kg", title: "Lal Chal 5 kg", category: "Rice", image: "https://backoffice.ghorerbazar.com/productImages/DA91S1777297562.jpg", price: 600, stock: "in" },
+  { id: "chinigura-aromatic-rice-1kg", title: "Chinigura Aromatic Rice 1kg", category: "Rice", image: "https://backoffice.ghorerbazar.com/productImages/0LySu1767442263.jpg", price: 190, stock: "in" },
+  { id: "lal-chal-20kg", title: "Lal Chal 20kg", category: "Rice", image: "https://backoffice.ghorerbazar.com/productImages/6Z2Hq1767442007.jpg", price: 2300, stock: "in" },
+  { id: "lal-chal-10kg", title: "Lal Chal 10kg", category: "Rice", image: "https://backoffice.ghorerbazar.com/productImages/Xz5mr1767441942.jpg", price: 1150, stock: "in" },
+  { id: "rice-flour-chaler-gura-2kg", title: "Rice Flour (Chaler Gura) 2kg", category: "Rice", image: "https://backoffice.ghorerbazar.com/productImages/XA6LK1767439665.jpg", price: 200, stock: "in" },
+  { id: "rataboro-rice-1kg", title: "Rataboro Rice 1kg", category: "Rice", image: "https://backoffice.ghorerbazar.com/productImages/g7qzE1767438406.jpg", price: 175, stock: "in" },
+  { id: "mehran-extra-long-basmati-rice-1kg-2", title: "Mehran Extra Long Basmati Rice 1kg", category: "Rice", image: "https://backoffice.ghorerbazar.com/productImages/UyY6c1767437099.jpg", price: 595, stock: "in" },
+  { id: "mehran-extra-long-basmati-rice-1kg", title: "Mehran Super Kernel Basmati Rice 1kg", category: "Rice", image: "https://backoffice.ghorerbazar.com/productImages/x7FP41767435924.jpg", price: 595, stock: "in" },
+];
+
 const defaultBanners: Banner[] = [
   { id: "mango-hero", title: "Mango offer", image: "https://backoffice.ghorerbazar.com/banner/hSjx41780379939-dark-1000x400.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/Gcahd1780379939-dark-500x280.png", category: "Mango", active: true },
   { id: "dates-hero", title: "Dates collection", image: "https://backoffice.ghorerbazar.com/banner/sCUkg1774768074-dark.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/I2Vto1774768074-dark.png", category: "Dates", active: true },
@@ -324,6 +337,7 @@ async function seedDatabase() {
     await seedLiveSpicesNutsProducts();
     await seedLiveOilHoneyBeverageOrganicProducts();
     await seedLiveFloursLentilsProducts();
+    await seedLiveRiceProducts();
     return;
   }
 
@@ -333,6 +347,7 @@ async function seedDatabase() {
   await seedLiveSpicesNutsProducts();
   await seedLiveOilHoneyBeverageOrganicProducts();
   await seedLiveFloursLentilsProducts();
+  await seedLiveRiceProducts();
 }
 
 async function seedLiveCategoryProducts() {
@@ -407,6 +422,26 @@ async function seedLiveFloursLentilsProducts() {
   const existingIds = new Set((existingProducts ?? []).map((product) => String(product.id)));
   const existingTitles = new Set((existingProducts ?? []).map((product) => String(product.title).toLowerCase()));
   const missingProducts = liveFloursLentilsSeedProducts.filter((product) => !existingIds.has(product.id) && !existingTitles.has(product.title.toLowerCase()));
+  if (missingProducts.length) {
+    const { error } = await supabase.from("products").insert(missingProducts.map(toProductRow));
+    if (error) throw error;
+  }
+
+  await supabase.from("settings").upsert({ key: seedKey, value: new Date().toISOString() });
+}
+
+async function seedLiveRiceProducts() {
+  const seedKey = "liveRiceSeed20260607";
+  const { data: existingSeed, error: seedError } = await supabase.from("settings").select("value").eq("key", seedKey).maybeSingle();
+  if (seedError) throw seedError;
+  if (existingSeed) return;
+
+  const { data: existingProducts, error: productError } = await supabase.from("products").select("id,title");
+  if (productError) throw productError;
+
+  const existingIds = new Set((existingProducts ?? []).map((product) => String(product.id)));
+  const existingTitles = new Set((existingProducts ?? []).map((product) => String(product.title).toLowerCase()));
+  const missingProducts = liveRiceSeedProducts.filter((product) => !existingIds.has(product.id) && !existingTitles.has(product.title.toLowerCase()));
   if (missingProducts.length) {
     const { error } = await supabase.from("products").insert(missingProducts.map(toProductRow));
     if (error) throw error;
