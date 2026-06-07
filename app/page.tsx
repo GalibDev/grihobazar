@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
-import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
@@ -65,7 +64,6 @@ type ProductActions = {
 };
 
 const formatPrice = (price: number) => `৳${price.toLocaleString("en-US")}`;
-const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 const categories = [
   { title: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/category_images/Zf99g1774766372.png" },
@@ -448,7 +446,7 @@ export default function HomePage() {
     const normalized = query.trim().toLowerCase();
     return storeCatalog.filter((product) => {
       const matchesQuery = !normalized || `${product.title} ${product.category}`.toLowerCase().includes(normalized);
-      const matchesCategory = activeCategory === "All" || product.category === activeCategory;
+      const matchesCategory = matchesStoreCategory(product, activeCategory);
       return matchesQuery && matchesCategory;
     });
   }, [activeCategory, query, storeCatalog]);
@@ -522,7 +520,7 @@ export default function HomePage() {
   }
 
   function jumpToCategory(category: string) {
-    setActiveCategory(category === "Offer Zone" ? "All" : category);
+    setActiveCategory(category);
     document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   }
@@ -633,6 +631,73 @@ function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCo
   );
 }
 
+function matchesStoreCategory(product: Product, selectedCategory: string) {
+  const title = product.title.toLowerCase();
+  const category = product.category.toLowerCase();
+  const text = `${title} ${category}`;
+
+  if (selectedCategory === "All") return true;
+  if (product.category === selectedCategory) return true;
+
+  switch (selectedCategory) {
+    case "Combos":
+      return product.category === "Exclusive Combo Deals" || product.category === "Combos";
+    case "Offer Zone":
+      return Boolean(product.oldPrice || /save|offer|best/i.test(product.badge ?? ""));
+    case "Organic":
+    case "Organic Certified":
+      return product.category === "Organic" || product.category === "Organic Certified" || text.includes("organic");
+    case "Rice":
+      return product.category === "Rice" || /rice|chaler|chaler gura/i.test(product.title);
+    case "Pickle":
+      return product.category === "Pickle" || /pickle|achar/i.test(product.title);
+    case "Tabaya":
+      return product.category === "Tabaya" || /tabaya/i.test(text);
+    case "Sundarban Honey":
+      return product.category === "Honey" && /sundarban/i.test(product.title);
+    case "Black Seed Honey":
+      return product.category === "Honey" && /black seed/i.test(product.title);
+    case "Lichu Flower Honey":
+      return product.category === "Honey" && /lichu|lychee/i.test(product.title);
+    case "African Organic Honey":
+      return product.category === "Honey" && /african|organic/i.test(product.title);
+    case "Sidr Honey":
+      return product.category === "Honey" && /sidr/i.test(product.title);
+    case "Honeycomb":
+      return product.category === "Honey" && /honeycomb|comb/i.test(product.title);
+    case "Safawi/kalmi":
+      return product.category === "Dates" && /safawi|kalmi/i.test(product.title);
+    case "Medjool":
+      return product.category === "Dates" && /medjool/i.test(product.title);
+    case "Sukkari":
+      return product.category === "Dates" && /sukkari/i.test(product.title);
+    case "Ajwa":
+      return product.category === "Dates" && /ajwa/i.test(product.title);
+    case "Mabroom":
+      return product.category === "Dates" && /mabroom/i.test(product.title);
+    case "Whole Spices":
+      return product.category === "Spices" && /cardamom|cinnamon|cumin(?!.*powder)|coriander 500|pepper|clove|mace|star anise|methi|panch foron/i.test(product.title);
+    case "Basic Spices":
+      return product.category === "Spices" && /chili|turmeric|coriander powder|cumin .*powder/i.test(product.title);
+    case "Mixed Spices":
+      return product.category === "Spices" && /masala|combo|biryani|biriyani|tehari|bbq|kala bhuna|curry/i.test(product.title);
+    case "Nuts":
+      return product.category === "Nuts & Seeds" && /nut|almond|walnut|cashew/i.test(product.title);
+    case "Seeds":
+      return product.category === "Nuts & Seeds" && /seed|kalojira|mustard/i.test(product.title);
+    case "Tea":
+      return product.category === "Beverage" && /tea|longjing|matcha/i.test(product.title);
+    case "Coffee":
+      return product.category === "Beverage" && /coffee|maccoffee/i.test(product.title);
+    case "Flours":
+      return product.category === "Flours & Lentils" && /flour|atta|semai/i.test(product.title);
+    case "Lentils":
+      return product.category === "Flours & Lentils" && /dal|lentil|chola|mashkalai|masoor|kabuli/i.test(product.title);
+    default:
+      return false;
+  }
+}
+
 function DesktopNav({ onCategory }: { onCategory: (category: string) => void }) {
   return (
     <nav className="sticky top-0 z-30 hidden bg-[#052925] text-white lg:block">
@@ -646,9 +711,9 @@ function DesktopNav({ onCategory }: { onCategory: (category: string) => void }) 
             {item.children ? (
               <div className="invisible absolute left-0 top-full z-50 min-w-[260px] bg-white py-2 text-[14px] font-normal text-[#666] opacity-0 shadow-float transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                 {item.children.map((child) => (
-                  <Link key={child} href={`/collections/${slugify(child)}`} className="block px-7 py-3 hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none">
+                  <button key={child} type="button" onClick={() => onCategory(child)} className="block w-full px-7 py-3 text-left hover:bg-brand-orange hover:text-white focus-visible:bg-brand-orange focus-visible:text-white focus-visible:outline-none">
                     {child}
-                  </Link>
+                  </button>
                 ))}
               </div>
             ) : null}
