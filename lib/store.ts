@@ -187,6 +187,16 @@ const liveOilHoneyBeverageOrganicSeedProducts: Product[] = [
   { id: "karkuma-organic-healthy-gut", title: "Karkuma Organic Healthy Gut", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/3Htjv1767438695.jpg", price: 800, stock: "in" },
 ];
 
+const liveFloursLentilsSeedProducts: Product[] = [
+  { id: "rice-flour-chaler-gura-2kg", title: "Rice Flour (Chaler Gura) 2kg", category: "Flours & Lentils", image: "https://backoffice.ghorerbazar.com/productImages/XA6LK1767439665.jpg", price: 200, stock: "in" },
+  { id: "laal-atta-2kg", title: "Laal Atta 2kg", category: "Flours & Lentils", image: "https://backoffice.ghorerbazar.com/productImages/tFQxp1767439453.jpg", price: 200, stock: "in" },
+  { id: "masoor-dal-1kg", title: "Masoor Dal 1 Kg", category: "Flours & Lentils", image: "https://backoffice.ghorerbazar.com/productImages/lcmXO1767438477.jpg", price: 170, stock: "in" },
+  { id: "mashkalai-dal-1-kg", title: "Mashkalai Dal 1 Kg", category: "Flours & Lentils", image: "https://backoffice.ghorerbazar.com/productImages/unBAY1767438328.jpg", price: 300, stock: "in" },
+  { id: "lachcha-semai-500gm", title: "Lachcha Semai 500gm", category: "Flours & Lentils", image: "https://backoffice.ghorerbazar.com/productImages/LDEyx1773223711.jpeg", price: 710, oldPrice: 750, badge: "Save 5%", badgeTone: "green", stock: "in" },
+  { id: "lachcha-semai-1kg", title: "Lachcha Semai 1kg", category: "Flours & Lentils", image: "https://backoffice.ghorerbazar.com/productImages/jt8PG1773222875.jpeg", price: 1425, oldPrice: 1500, badge: "Save 5%", badgeTone: "green", stock: "in" },
+  { id: "kabuli-chola-1kg", title: "Kabuli Chola 1kg", category: "Flours & Lentils", image: "https://backoffice.ghorerbazar.com/productImages/cejW21767437388.jpg", price: 380, stock: "in" },
+];
+
 const defaultBanners: Banner[] = [
   { id: "mango-hero", title: "Mango offer", image: "https://backoffice.ghorerbazar.com/banner/hSjx41780379939-dark-1000x400.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/Gcahd1780379939-dark-500x280.png", category: "Mango", active: true },
   { id: "dates-hero", title: "Dates collection", image: "https://backoffice.ghorerbazar.com/banner/sCUkg1774768074-dark.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/I2Vto1774768074-dark.png", category: "Dates", active: true },
@@ -313,6 +323,7 @@ async function seedDatabase() {
   if ((count ?? 0) > 0) {
     await seedLiveSpicesNutsProducts();
     await seedLiveOilHoneyBeverageOrganicProducts();
+    await seedLiveFloursLentilsProducts();
     return;
   }
 
@@ -321,6 +332,7 @@ async function seedDatabase() {
   await supabase.from("settings").upsert(toSettingsRows(defaultSettings));
   await seedLiveSpicesNutsProducts();
   await seedLiveOilHoneyBeverageOrganicProducts();
+  await seedLiveFloursLentilsProducts();
 }
 
 async function seedLiveCategoryProducts() {
@@ -375,6 +387,26 @@ async function seedLiveOilHoneyBeverageOrganicProducts() {
   const existingIds = new Set((existingProducts ?? []).map((product) => String(product.id)));
   const existingTitles = new Set((existingProducts ?? []).map((product) => String(product.title).toLowerCase()));
   const missingProducts = liveOilHoneyBeverageOrganicSeedProducts.filter((product) => !existingIds.has(product.id) && !existingTitles.has(product.title.toLowerCase()));
+  if (missingProducts.length) {
+    const { error } = await supabase.from("products").insert(missingProducts.map(toProductRow));
+    if (error) throw error;
+  }
+
+  await supabase.from("settings").upsert({ key: seedKey, value: new Date().toISOString() });
+}
+
+async function seedLiveFloursLentilsProducts() {
+  const seedKey = "liveFloursLentilsSeed20260607";
+  const { data: existingSeed, error: seedError } = await supabase.from("settings").select("value").eq("key", seedKey).maybeSingle();
+  if (seedError) throw seedError;
+  if (existingSeed) return;
+
+  const { data: existingProducts, error: productError } = await supabase.from("products").select("id,title");
+  if (productError) throw productError;
+
+  const existingIds = new Set((existingProducts ?? []).map((product) => String(product.id)));
+  const existingTitles = new Set((existingProducts ?? []).map((product) => String(product.title).toLowerCase()));
+  const missingProducts = liveFloursLentilsSeedProducts.filter((product) => !existingIds.has(product.id) && !existingTitles.has(product.title.toLowerCase()));
   if (missingProducts.length) {
     const { error } = await supabase.from("products").insert(missingProducts.map(toProductRow));
     if (error) throw error;
