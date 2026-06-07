@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { ClipboardEvent, ReactNode } from "react";
+import type { ClipboardEvent, DragEvent, ReactNode } from "react";
 import {
   Boxes,
   CheckCircle2,
@@ -92,6 +92,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [draggingImage, setDraggingImage] = useState(false);
   const [message, setMessage] = useState("");
 
   const totalSales = orders.reduce((sum, order) => sum + order.total, 0);
@@ -183,8 +184,12 @@ export default function AdminPage() {
     await loadData();
   }
 
-  async function uploadImage(file: File | null, source: "upload" | "paste" = "upload") {
+  async function uploadImage(file: File | null, source: "upload" | "paste" | "drop" = "upload") {
     if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setMessage("Only image file upload korte parben.");
+      return;
+    }
     setUploading(true);
     const formData = new FormData();
     formData.append("file", file);
@@ -195,6 +200,11 @@ export default function AdminPage() {
       setDraft((current) => ({ ...current, image: result.url }));
       if (source === "paste") {
         setMessage("Pasted image upload hoyeche.");
+        setUploading(false);
+        return;
+      }
+      if (source === "drop") {
+        setMessage("Dropped image upload hoyeche.");
         setUploading(false);
         return;
       }
@@ -222,6 +232,31 @@ export default function AdminPage() {
       setDraft((current) => ({ ...current, image: pastedText }));
       setMessage("Pasted image URL ready. Save chapun.");
     }
+  }
+
+  function handleImageDragOver(event: DragEvent<HTMLLabelElement>) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+    setDraggingImage(true);
+  }
+
+  function handleImageDragLeave(event: DragEvent<HTMLLabelElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      setDraggingImage(false);
+    }
+  }
+
+  function handleImageDrop(event: DragEvent<HTMLLabelElement>) {
+    event.preventDefault();
+    setDraggingImage(false);
+    const file = Array.from(event.dataTransfer.files).find((item) => item.type.startsWith("image/"));
+
+    if (!file) {
+      setMessage("Drag kore sudhu image file drop korun.");
+      return;
+    }
+
+    void uploadImage(file, "drop");
   }
 
   async function logout() {
@@ -408,8 +443,13 @@ export default function AdminPage() {
               ) : null}
               <label
                 onPaste={handleImagePaste}
+                onDragOver={handleImageDragOver}
+                onDragLeave={handleImageDragLeave}
+                onDrop={handleImageDrop}
                 tabIndex={0}
-                className="grid gap-2 rounded border border-dashed border-[#d1d5db] p-3 text-sm font-semibold outline-none focus:border-brand-orange focus:bg-[#fff8f1]"
+                className={`grid gap-2 rounded border border-dashed p-3 text-sm font-semibold outline-none focus:border-brand-orange focus:bg-[#fff8f1] ${
+                  draggingImage ? "border-brand-orange bg-[#fff8f1]" : "border-[#d1d5db]"
+                }`}
               >
                 Upload Image
                 <input
@@ -419,7 +459,7 @@ export default function AdminPage() {
                   className="rounded border px-3 py-2 text-sm font-normal"
                 />
                 {uploading ? <span className="text-xs text-[#777]">Uploading...</span> : <span className="text-xs text-[#777]">Upload করার পর image preview দেখালে Save চাপতে হবে।</span>}
-                <span className="text-xs text-[#777]">Copy kora image paste korte ei upload box-e click kore Ctrl+V chapun.</span>
+                <span className="text-xs text-[#777]">Image drag kore ekhane drop korun, ba ei box-e click kore Ctrl+V paste korun.</span>
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <AdminInput label="Price" type="number" value={String(draft.price || "")} onChange={(value) => setDraft({ ...draft, price: Number(value) })} />
