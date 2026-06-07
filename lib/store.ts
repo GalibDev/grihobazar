@@ -57,6 +57,60 @@ const liveCategorySeedProducts: Product[] = [
   { id: "brand-tabaya", title: "Tabaya", category: "Our Brands", image: "https://backoffice.ghorerbazar.com/brand_images/YuK9J1768888227.png", price: 1, stock: "in" },
 ];
 
+const liveSpicesNutsSeedProducts: Product[] = [
+  { id: "chili-morich-powder-500g", title: "Chili (Morich) Powder 500g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/j32Ba1767262660.jpg", price: 400, stock: "in" },
+  { id: "turmeric-holud-powder-500g", title: "Turmeric (Holud) Powder 500g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/GuI2U1767262030.jpg", price: 295, stock: "in" },
+  { id: "coriander-powder-500gm", title: "Coriander Powder 500gm", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/hYhgA1767262598.jpg", price: 240, stock: "in" },
+  { id: "kala-bhuna-masala-500gm", title: "Kala Bhuna Masala-500gm", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/t44nb1767261833.jpg", price: 1350, oldPrice: 1500, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "shahi-masala-500gm", title: "Shahi Masala 500gm", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/TrEmJ1767101265.jpg", price: 1350, oldPrice: 1500, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "cumin-jira-powder-500gm", title: "Cumin (Jira) Powder 500gm", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/gkojl1767262517.jpg", price: 880, stock: "in" },
+  { id: "kala-bhuna-masala-250gm", title: "Kala Bhuna Masala-250gm", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/Hexa11767261902.jpg", price: 675, oldPrice: 750, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "black-cardamom-200g", title: "Black Cardamom 200g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/MiZu11767260879.jpg", price: 700, stock: "in" },
+  { id: "gura-masala-combo-mini-pack", title: "Gura Masala Combo (Mini Pack)", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/BVB2a1767100552.jpg", price: 950, oldPrice: 985, badge: "Save 4%", badgeTone: "green", stock: "in" },
+  { id: "shahi-masala-250gm", title: "Shahi Masala 250gm", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/aSOoS1767779077.jpg", price: 675, oldPrice: 750, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "white-pepper-200g", title: "White Pepper 200g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/KC6on1767260635.jpg", price: 700, stock: "in" },
+  { id: "shahi-masala-combo", title: "Shahi Masala Combo", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/Nly4i1767100328.jpg", price: 1600, oldPrice: 1700, badge: "Save 6%", badgeTone: "green", stock: "in" },
+  { id: "shahi-masala-100g", title: "Shahi Masala 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/agItn1778758616.png", price: 300, stock: "in" },
+  { id: "cinnamon-200g", title: "Cinnamon 200g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/SaUyH1767261091.jpg", price: 400, stock: "in" },
+  { id: "masala-combo", title: "Masala Combo", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/x3RSK1767249608.jpg", price: 1700, oldPrice: 1785, badge: "Save 5%", badgeTone: "green", stock: "in" },
+  { id: "panch-foron-50g", title: "Panch Foron 50g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/fn9f51778742184.png", price: 30, stock: "in" },
+  { id: "chaat-masala-100g", title: "Chaat Masala 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/fOcTg1778742108.png", price: 160, stock: "in" },
+  { id: "turmeric-holud-powder-250g", title: "Turmeric (Holud) Powder 250g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/36x6e1767262411.jpg", price: 155, stock: "in" },
+  { id: "cardamom-100g", title: "Cardamom 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/bkc581767261015.jpg", price: 750, stock: "in" },
+  { id: "fish-curry-masala-100g", title: "Fish Curry Masala 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/5G74w1778742057.png", price: 80, stock: "in" },
+  { id: "chili-morich-powder-250g", title: "Chili (Morich) Powder 250g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/eEm5D1771737328.jpg", price: 220, stock: "in" },
+  { id: "coriander-500g", title: "Coriander 500g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/4wi5y1767259113.jpg", price: 225, stock: "in" },
+  { id: "muttonbeef-curry-masala-100g", title: "Mutton/Beef Curry Masala 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/zzYbk1778742001.png", price: 100, stock: "in" },
+  { id: "cumin-jira-powder-250gm", title: "Cumin (Jira) Powder 250gm", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/FA8kg1771390221.jpg", price: 460, stock: "in" },
+  { id: "tehari-masala-40g", title: "Tehari Masala 40g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/1lLzD1778741794.png", price: 60, stock: "in" },
+  { id: "coriander-powder-250gm", title: "Coriander Powder 250gm", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/4OFec1771390023.jpg", price: 130, stock: "in" },
+  { id: "kacchi-biriyani-masala-40g", title: "Kacchi Biriyani Masala 40g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/vqA8h1778741717.png", price: 70, stock: "in" },
+  { id: "bbq-masala-50g", title: "BBQ Masala 50g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/nPs9f1778741500.png", price: 80, stock: "in" },
+  { id: "cumin-500g", title: "Cumin 500g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/YYo901767589406.jpg", price: 600, stock: "in" },
+  { id: "meat-curry-masala-100g", title: "Meat Curry Masala 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/5RSD31778741380.png", price: 100, stock: "in" },
+  { id: "biryani-masala-40g", title: "Biryani Masala 40g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/XSNCo1778741300.png", price: 60, stock: "in" },
+  { id: "chicken-masala-100g", title: "Chicken Masala 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/PTc8V1778741217.png", price: 100, stock: "in" },
+  { id: "kala-bhuna-masala-100g", title: "Kala Bhuna Masala 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/rEIW21778740478.png", price: 300, stock: "in" },
+  { id: "mace-100g", title: "Mace 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/E5CYl1767258964.jpg", price: 600, stock: "in" },
+  { id: "star-anise-100g", title: "Star Anise 100g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/k2mhM1767260724.jpg", price: 550, stock: "in" },
+  { id: "black-pepper-200g", title: "Black Pepper 200g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/m6Brm1767260570.jpg", price: 500, stock: "in" },
+  { id: "clove-200g", title: "Clove 200g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/KzwkX1767259367.jpg", price: 650, stock: "in" },
+  { id: "methi-500g", title: "Methi 500g", category: "Spices", image: "https://backoffice.ghorerbazar.com/productImages/TsuAa1767259209.jpg", price: 250, stock: "in" },
+  { id: "honey-nuts-800gm", title: "Honey Nuts 800gm", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/4BTRl1767443347.jpg", price: 1500, badge: "Best Selling", badgeTone: "orange", stock: "in" },
+  { id: "almond-1kg", title: "Almond 1kg", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/IvsiP1767095664.jpg", price: 1500, stock: "in" },
+  { id: "walnut-250gm", title: "Walnut 250gm", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/mGGzp1767587913.jpg", price: 500, stock: "in" },
+  { id: "walnut-1kg", title: "Walnut 1kg", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/7ruzF1767591190.jpg", price: 1800, stock: "in" },
+  { id: "almond-250g", title: "Almond 250g", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/tdtHB1767096113.jpg", price: 400, stock: "in" },
+  { id: "cashew-nuts-medium-size-250g", title: "Cashew Nuts Medium Size 250g", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/U970T1767096491.jpg", price: 550, stock: "in" },
+  { id: "cashew-nut-medium-size-500gm", title: "Cashew Nuts Medium Size 500gm", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/6e55t1767441512.jpg", price: 1000, stock: "in" },
+  { id: "honey-nuts-500gm", title: "Honey Nuts 500gm", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/1ubAo1767443414.jpg", price: 1000, stock: "in" },
+  { id: "walnut-500gm", title: "Walnut 500gm", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/HsQQ51767096867.jpg", price: 900, stock: "in" },
+  { id: "almond-500gm", title: "Almond 500gm", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/T6QIT1767095834.jpg", price: 750, stock: "in" },
+  { id: "black-cumin-kalojira-1kg", title: "Black Cumin (Kalojira) 1kg", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/DxUUp1767441748.jpg", price: 1000, stock: "in" },
+  { id: "black-cumin-kalojira-500gm", title: "Black Cumin (Kalojira) 500gm", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/zG2Lz1767441659.jpg", price: 500, stock: "in" },
+  { id: "local-mustard-seed-500g", title: "Local Mustard Seed 500g", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/GitND1767515685.jpg", price: 165, stock: "in" },
+];
+
 const defaultBanners: Banner[] = [
   { id: "mango-hero", title: "Mango offer", image: "https://backoffice.ghorerbazar.com/banner/hSjx41780379939-dark-1000x400.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/Gcahd1780379939-dark-500x280.png", category: "Mango", active: true },
   { id: "dates-hero", title: "Dates collection", image: "https://backoffice.ghorerbazar.com/banner/sCUkg1774768074-dark.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/I2Vto1774768074-dark.png", category: "Dates", active: true },
@@ -180,11 +234,15 @@ async function seedDatabase() {
   await supabase.from("categories").upsert(defaultCategories);
   await seedLiveCategoryProducts();
 
-  if ((count ?? 0) > 0) return;
+  if ((count ?? 0) > 0) {
+    await seedLiveSpicesNutsProducts();
+    return;
+  }
 
   await supabase.from("products").upsert(defaultProducts.map(toProductRow));
   await supabase.from("banners").upsert(defaultBanners.map(toBannerRow));
   await supabase.from("settings").upsert(toSettingsRows(defaultSettings));
+  await seedLiveSpicesNutsProducts();
 }
 
 async function seedLiveCategoryProducts() {
@@ -199,6 +257,26 @@ async function seedLiveCategoryProducts() {
 
   const existingIds = new Set((existingProducts ?? []).map((product) => String(product.id)));
   const missingProducts = liveCategorySeedProducts.filter((product) => !existingIds.has(product.id));
+  if (missingProducts.length) {
+    const { error } = await supabase.from("products").insert(missingProducts.map(toProductRow));
+    if (error) throw error;
+  }
+
+  await supabase.from("settings").upsert({ key: seedKey, value: new Date().toISOString() });
+}
+
+async function seedLiveSpicesNutsProducts() {
+  const seedKey = "liveSpicesNutsSeed20260607";
+  const { data: existingSeed, error: seedError } = await supabase.from("settings").select("value").eq("key", seedKey).maybeSingle();
+  if (seedError) throw seedError;
+  if (existingSeed) return;
+
+  const { data: existingProducts, error: productError } = await supabase.from("products").select("id,title");
+  if (productError) throw productError;
+
+  const existingIds = new Set((existingProducts ?? []).map((product) => String(product.id)));
+  const existingTitles = new Set((existingProducts ?? []).map((product) => String(product.title).toLowerCase()));
+  const missingProducts = liveSpicesNutsSeedProducts.filter((product) => !existingIds.has(product.id) && !existingTitles.has(product.title.toLowerCase()));
   if (missingProducts.length) {
     const { error } = await supabase.from("products").insert(missingProducts.map(toProductRow));
     if (error) throw error;
