@@ -11,10 +11,14 @@ const navItems = ["Combos", "Offer Zone", "Mango", "Honey", "Oil & Ghee", "Dates
 
 export function AuthPage({ mode }: { mode: AuthMode }) {
   const [message, setMessage] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const isRegister = mode === "register";
 
-  async function googleLogin() {
-    setMessage("");
+  async function getFirebaseAuth() {
     const config = {
       apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
       authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -23,18 +27,75 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
     };
 
     if (!config.apiKey || !config.authDomain || !config.projectId || !config.appId) {
-      setMessage("Google login active korte Firebase web config env vars Vercel-e set korte hobe.");
-      return;
+      throw new Error("Firebase env vars Vercel-e set korte hobe.");
     }
 
-    const [{ initializeApp, getApps }, { GoogleAuthProvider, getAuth, signInWithPopup }] = await Promise.all([
+    const [{ initializeApp, getApps }, { getAuth }] = await Promise.all([
       import("firebase/app"),
       import("firebase/auth"),
     ]);
     const app = getApps().length ? getApps()[0] : initializeApp(config);
-    const auth = getAuth(app);
-    const result = await signInWithPopup(auth, new GoogleAuthProvider());
-    setMessage(`Google login successful: ${result.user.email ?? result.user.displayName ?? "account connected"}`);
+    return getAuth(app);
+  }
+
+  async function googleLogin() {
+    setMessage("");
+    setLoading(true);
+    try {
+      const auth = await getFirebaseAuth();
+      const { GoogleAuthProvider, signInWithPopup } = await import("firebase/auth");
+      const result = await signInWithPopup(auth, new GoogleAuthProvider());
+      setMessage(`Google login successful: ${result.user.email ?? result.user.displayName ?? "account connected"}`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Google login failed.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function credentialAuth() {
+    setMessage("");
+
+    if (!email.includes("@")) {
+      setMessage("Please valid Gmail/email address din.");
+      return;
+    }
+    if (password.length < 6) {
+      setMessage("Password minimum 6 character hote hobe.");
+      return;
+    }
+    if (isRegister && password !== confirmPassword) {
+      setMessage("Password and confirm password match korche na.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const auth = await getFirebaseAuth();
+      const { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut, updateProfile } = await import("firebase/auth");
+
+      if (isRegister) {
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        if (name.trim()) await updateProfile(result.user, { displayName: name.trim() });
+        await sendEmailVerification(result.user);
+        setMessage("Registration successful. Apnar Gmail inbox-e verification email pathano hoyeche. Email verify kore login korun.");
+        return;
+      }
+
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      if (!result.user.emailVerified) {
+        await sendEmailVerification(result.user);
+        await signOut(auth);
+        setMessage("Email ekhono verified na. Verification email abar pathano hoyeche, Gmail inbox/spam check korun.");
+        return;
+      }
+
+      setMessage(`Login successful: ${result.user.email ?? "account verified"}`);
+    } catch (error) {
+      setMessage(formatFirebaseError(error));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -96,18 +157,18 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
             </div>
 
             <AuthPanel title={isRegister ? "Signup With Credentials" : "Login With Credentials"}>
-              {isRegister ? <InputShell icon={<UserRound className="h-6 w-6" />} placeholder="Full name" /> : null}
-              <InputShell icon={<UserRound className="h-6 w-6" />} placeholder="Email or phone number" />
-              <InputShell icon={<Lock className="h-6 w-6" />} placeholder="Password" rightIcon={<Eye className="h-6 w-6" />} type="password" />
-              {isRegister ? <InputShell icon={<Lock className="h-6 w-6" />} placeholder="Confirm password" type="password" /> : null}
+              {isRegister ? <InputShell icon={<UserRound className="h-6 w-6" />} placeholder="Full name" value={name} onChange={setName} /> : null}
+              <InputShell icon={<Mail className="h-6 w-6" />} placeholder="Gmail or email address" value={email} onChange={setEmail} type="email" />
+              <InputShell icon={<Lock className="h-6 w-6" />} placeholder="Password" rightIcon={<Eye className="h-6 w-6" />} value={password} onChange={setPassword} type="password" />
+              {isRegister ? <InputShell icon={<Lock className="h-6 w-6" />} placeholder="Confirm password" value={confirmPassword} onChange={setConfirmPassword} type="password" /> : null}
               {!isRegister ? (
                 <div className="flex items-center justify-between text-lg text-[#6b7280]">
                   <label className="flex items-center gap-3"><input type="checkbox" className="h-6 w-6 rounded border-[#a3a3a3]" /> Remember me</label>
                   <button type="button" className="text-brand-orange underline">Forgotten password?</button>
                 </div>
               ) : null}
-              <button type="button" onClick={() => setMessage("Credential login backend connect korle active hobe. Google login button use korte paren.")} className="h-[72px] rounded-[10px] bg-brand-orange text-xl font-semibold text-white">
-                {isRegister ? "Signup" : "Login"}
+              <button type="button" onClick={credentialAuth} disabled={loading} className="h-[72px] rounded-[10px] bg-brand-orange text-xl font-semibold text-white disabled:bg-[#9ca3af]">
+                {loading ? "Please wait..." : isRegister ? "Signup" : "Login"}
               </button>
             </AuthPanel>
           </div>
@@ -118,7 +179,7 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
               <span>{isRegister ? "or signup with" : "or signin with"}</span>
               <span className="h-px bg-[#e0e0e0]" />
             </div>
-            <button type="button" onClick={googleLogin} className="mx-auto mt-9 grid h-[82px] w-[82px] place-items-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.08)]" aria-label="Continue with Google">
+            <button type="button" onClick={googleLogin} disabled={loading} className="mx-auto mt-9 grid h-[82px] w-[82px] place-items-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.08)] disabled:opacity-60" aria-label="Continue with Google">
               <GoogleIcon />
             </button>
             {message ? <p className="mt-6 rounded bg-[#fff2e7] p-4 text-center font-semibold text-brand-ink">{message}</p> : null}
@@ -143,8 +204,48 @@ function AuthPanel({ title, children }: { title: string; children: ReactNode }) 
   return <section className="grid gap-6 rounded-[22px] bg-[#f3f3f3] p-8 lg:min-h-[360px] lg:p-12"><h2 className="text-2xl font-semibold">{title}</h2>{children}</section>;
 }
 
-function InputShell({ icon, placeholder, rightIcon, type = "text" }: { icon: ReactNode; placeholder: string; rightIcon?: ReactNode; type?: string }) {
-  return <label className="grid h-[78px] grid-cols-[34px_1fr_auto] items-center gap-5 rounded-[10px] bg-white px-6 text-brand-orange shadow-[0_4px_12px_rgba(0,0,0,0.10)]">{icon}<input type={type} className="min-w-0 bg-transparent text-xl text-brand-ink outline-none placeholder:text-[#b8c0ca]" placeholder={placeholder} />{rightIcon ? <span className="text-[#9ca3af]">{rightIcon}</span> : null}</label>;
+function InputShell({
+  icon,
+  placeholder,
+  rightIcon,
+  type = "text",
+  value,
+  onChange,
+}: {
+  icon: ReactNode;
+  placeholder: string;
+  rightIcon?: ReactNode;
+  type?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+}) {
+  return (
+    <label className="grid h-[78px] grid-cols-[34px_1fr_auto] items-center gap-5 rounded-[10px] bg-white px-6 text-brand-orange shadow-[0_4px_12px_rgba(0,0,0,0.10)]">
+      {icon}
+      <input
+        type={type}
+        value={value}
+        onChange={(event) => onChange?.(event.target.value)}
+        className="min-w-0 bg-transparent text-xl text-brand-ink outline-none placeholder:text-[#b8c0ca]"
+        placeholder={placeholder}
+      />
+      {rightIcon ? <span className="text-[#9ca3af]">{rightIcon}</span> : null}
+    </label>
+  );
+}
+
+function formatFirebaseError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+
+  if (message.includes("auth/email-already-in-use")) return "Ei email diye already account ache. Login korun.";
+  if (message.includes("auth/invalid-credential")) return "Email or password vul.";
+  if (message.includes("auth/user-not-found")) return "Ei email diye kono account nei.";
+  if (message.includes("auth/wrong-password")) return "Password vul.";
+  if (message.includes("auth/too-many-requests")) return "Too many attempts. Kichu khon pore try korun.";
+  if (message.includes("auth/popup-closed-by-user")) return "Google popup close korechen.";
+  if (message.includes("auth/unauthorized-domain")) return "Firebase authorized domains-e ei domain add korte hobe.";
+
+  return message || "Authentication failed.";
 }
 
 function GoogleIcon() {
