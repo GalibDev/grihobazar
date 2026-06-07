@@ -608,7 +608,7 @@ export default function HomePage() {
 function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCount: number; onModal: (modal: ModalType) => void; onCart: () => void; query: string; setQuery: (query: string) => void }) {
   const actions = [
     { label: "Track Order", icon: <MapPin />, onClick: () => onModal("track") },
-    { label: "Sign In", icon: <UserRound />, onClick: () => onModal("signin") },
+    { label: "Sign In", icon: <UserRound />, onClick: () => { window.location.href = "/login"; } },
     { label: "Wishlist", icon: <Heart />, onClick: () => onModal("wishlist") },
     { label: "Cart", icon: <ShoppingCart />, onClick: onCart, count: cartCount },
     { label: "More", icon: <Menu />, onClick: () => onModal("about") },
@@ -1518,7 +1518,7 @@ function Drawer({ menuOpen, setMenuOpen, onModal, onCategory, wishlistCount }: {
       {!menuOpen ? null : <button type="button" aria-label="Close menu overlay" onClick={() => setMenuOpen(false)} className="fixed inset-0 z-40 bg-black/50 lg:hidden" />}
       <button type="button" aria-label="Close menu" onClick={() => setMenuOpen(false)} className={`drawer-close-position fixed top-[25px] z-[46] h-[38px] w-[38px] text-white transition-opacity lg:hidden ${menuOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}><X className="h-[38px] w-[38px] stroke-[1.7]" /></button>
       <aside aria-hidden={!menuOpen} className={`phone-edge-left fixed bottom-0 top-0 z-[45] w-[min(74vw,326px)] overflow-y-auto bg-white px-[15px] pb-[90px] pt-[21px] transition-transform duration-300 max-[360px]:w-[78vw] lg:hidden ${menuOpen ? "visible translate-x-0" : "invisible -translate-x-[105%]"}`}>
-        <button type="button" onClick={() => onModal("signin")} className="mb-[35px] grid w-full grid-cols-[58px_1fr] items-center gap-3.5 rounded-[9px] bg-brand-orange p-3 text-left text-white">
+        <button type="button" onClick={() => { window.location.href = "/login"; }} className="mb-[35px] grid w-full grid-cols-[58px_1fr] items-center gap-3.5 rounded-[9px] bg-brand-orange p-3 text-left text-white">
           <img className="h-[54px] w-[54px] rounded-full" src="https://ghorerbazar.com/assets/images/avatar.png" alt="" />
           <div><strong className="block text-xl font-medium leading-none">Hello there!</strong><span className="block text-xl font-medium leading-none">Signin</span></div>
         </button>
@@ -1568,7 +1568,7 @@ function BottomNav({ cartCount, onMenuClick, onCart, onModal }: { cartCount: num
       <BottomNavItem icon={<LayoutGrid />} label="MENU" onClick={onMenuClick} />
       <BottomNavItem icon={<ShoppingBag />} label="CART" count={cartCount} onClick={onCart} />
       <BottomNavItem icon={<Search />} label="SEARCH" onClick={() => onModal("search")} />
-      <BottomNavItem icon={<UserRound />} label="ACCOUNT" onClick={() => onModal("signin")} />
+      <BottomNavItem icon={<UserRound />} label="ACCOUNT" onClick={() => { window.location.href = "/login"; }} />
     </nav>
   );
 }

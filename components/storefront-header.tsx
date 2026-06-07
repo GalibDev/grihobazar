@@ -79,7 +79,7 @@ export function StorefrontHeader() {
           </label>
           <div className="flex h-[45px] items-center justify-between text-brand-ink">
             <HeaderAction href="/track/order" icon={<MapPin />} label="Track Order" />
-            <HeaderAction href="/admin/login" icon={<UserRound />} label="Sign In" />
+            <HeaderAction href="/login" icon={<UserRound />} label="Sign In" />
             <HeaderAction href="/" icon={<Heart />} label="Wishlist" />
             <HeaderAction href="/cart" icon={<ShoppingCart />} label="Cart" count={cartCount} />
             <HeaderAction href="/" icon={<Menu />} label="More" />
