@@ -450,6 +450,10 @@ export default function HomePage() {
       return matchesQuery && matchesCategory;
     });
   }, [activeCategory, query, storeCatalog]);
+  const activeCategoryProducts = useMemo(
+    () => storeCatalog.filter((product) => matchesStoreCategory(product, activeCategory)),
+    [activeCategory, storeCatalog],
+  );
 
   useEffect(() => {
     document.body.classList.toggle("menu-open", menuOpen || cartOpen || modal !== null);
@@ -521,6 +525,7 @@ export default function HomePage() {
 
   function jumpToCategory(category: string) {
     setActiveCategory(category);
+    setShowAllJustForYou(category !== "All");
     document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   }
@@ -569,7 +574,11 @@ export default function HomePage() {
         <ProductSection section={storeSections[3]} cart={cart} wishlist={wishlist} onAction={() => jumpToCategory("Spices")} onAdd={addToCart} onQuantity={setQuantity} onDetails={openDetails} onBuy={buyNow} onWishlist={toggleWishlist} />
         <ProductSection section={storeSections[4]} cart={cart} wishlist={wishlist} onAction={() => jumpToCategory("Organic")} onAdd={addToCart} onQuantity={setQuantity} onDetails={openDetails} onBuy={buyNow} onWishlist={toggleWishlist} />
         <ProductSection
-          section={{ ...storeSections[5], products: showAllJustForYou ? storeSections[5].products : storeSections[5].products.slice(0, 10) }}
+          section={{
+            ...storeSections[5],
+            title: activeCategory === "All" ? "Just For You" : activeCategory,
+            products: showAllJustForYou ? activeCategoryProducts : activeCategoryProducts.slice(0, 10),
+          }}
           cart={cart}
           wishlist={wishlist}
           onAction={() => jumpToCategory("All")}
@@ -578,7 +587,7 @@ export default function HomePage() {
           onDetails={openDetails}
           onBuy={buyNow}
           onWishlist={toggleWishlist}
-          showLoadMore={!showAllJustForYou}
+          showLoadMore={!showAllJustForYou && activeCategoryProducts.length > 10}
           onLoadMore={() => setShowAllJustForYou(true)}
         />
 
@@ -918,9 +927,9 @@ function Brands({ products, onSeeAll }: { products: Product[]; onSeeAll: () => v
 
 function ProductSection(props: { section: ProductSectionData; cart: Record<string, CartItem>; wishlist: Record<string, Product>; showLoadMore?: boolean; onLoadMore?: () => void; onAction?: () => void; onAdd: (product: Product) => void; onQuantity: (product: Product, quantity: number) => void; onDetails: (product: Product) => void; onBuy: (product: Product) => void; onWishlist: (product: Product) => void }) {
   const { section, showLoadMore, onLoadMore, onAction } = props;
-  const isJustForYou = section.title === "Just For You";
+  const isJustForYou = section.category === "All";
   return (
-    <section id={section.title === "Just For You" ? "products" : undefined} className="pt-8 lg:pt-14">
+    <section id={section.category === "All" ? "products" : undefined} className="pt-8 lg:pt-14">
       <SectionHeader title={section.title} action={section.action} onAction={onAction} />
       {isJustForYou ? <JustForYouGrid {...props} products={section.products} /> : <ProductGrid {...props} products={section.products} />}
       {showLoadMore ? <button type="button" onClick={onLoadMore} className="mx-auto mt-8 block rounded-full border-2 border-brand-orange px-10 py-4 text-lg font-semibold text-brand-orange">LOAD MORE</button> : null}
