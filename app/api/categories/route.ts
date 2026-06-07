@@ -3,9 +3,16 @@ import { requireAdmin } from "@/lib/auth";
 import { makeId, readStore, writeStore } from "@/lib/store";
 import type { Category } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   const store = await readStore();
-  return NextResponse.json(store.categories);
+  return NextResponse.json(store.categories, {
+    headers: {
+      "Cache-Control": "no-store, max-age=0",
+    },
+  });
 }
 
 export async function POST(request: Request) {

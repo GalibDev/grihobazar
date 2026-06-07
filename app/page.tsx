@@ -428,7 +428,10 @@ export default function HomePage() {
   const cartItems = Object.values(cart);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const storeCatalog = useMemo(() => [...storeProducts, ...combos], [storeProducts]);
+  const storeCatalog = useMemo(() => {
+    const hasLiveCombos = storeProducts.some((product) => product.category === "Exclusive Combo Deals");
+    return hasLiveCombos ? storeProducts : [...storeProducts, ...combos];
+  }, [storeProducts]);
   const storeSections = useMemo<ProductSectionData[]>(
     () => [
       { title: "Mango", action: "VIEW ALL ITEMS", category: "Mango", products: storeProducts.filter((product) => product.category === "Mango") },
@@ -456,7 +459,7 @@ export default function HomePage() {
   }, [cartOpen, menuOpen, modal]);
 
   useEffect(() => {
-    fetch("/api/products")
+    fetch("/api/products", { cache: "no-store" })
       .then((response) => response.json())
       .then((nextProducts: Product[]) => setStoreProducts(nextProducts))
       .catch(() => setStoreProducts(products));
@@ -558,10 +561,10 @@ export default function HomePage() {
           />
         </section>
 
-        <Brands onSeeAll={() => setModal("about")} />
+        <Brands products={storeProducts.filter((product) => product.category === "Our Brands")} onSeeAll={() => jumpToCategory("Our Brands")} />
         <ProductSection section={storeSections[0]} cart={cart} wishlist={wishlist} onAction={() => jumpToCategory("Mango")} onAdd={addToCart} onQuantity={setQuantity} onDetails={openDetails} onBuy={buyNow} onWishlist={toggleWishlist} />
         <ProductSection section={storeSections[1]} cart={cart} wishlist={wishlist} onAction={() => jumpToCategory("Honey")} onAdd={addToCart} onQuantity={setQuantity} onDetails={openDetails} onBuy={buyNow} onWishlist={toggleWishlist} />
-        <ComboSection onDetails={openDetails} onAdd={addToCart} />
+        <ComboSection products={storeProducts.filter((product) => product.category === "Exclusive Combo Deals")} onDetails={openDetails} onAdd={addToCart} />
         <ProductSection section={storeSections[2]} cart={cart} wishlist={wishlist} onAction={() => jumpToCategory("Dates")} onAdd={addToCart} onQuantity={setQuantity} onDetails={openDetails} onBuy={buyNow} onWishlist={toggleWishlist} />
 
         <PromoBanner />
@@ -825,12 +828,14 @@ function FeaturedCategories({ onCategory }: { onCategory: (category: string) => 
   );
 }
 
-function Brands({ onSeeAll }: { onSeeAll: () => void }) {
+function Brands({ products, onSeeAll }: { products: Product[]; onSeeAll: () => void }) {
+  const brandImages = products.length ? products.map((product) => product.image) : brands;
+
   return (
     <section className="pt-7 lg:pt-14">
       <SectionHeader title="Our Brands" action="SEE ALL" onAction={onSeeAll} />
       <SlidingRail
-        items={brands}
+        items={brandImages}
         mobileItemsPerPage={2}
         desktopItemsPerPage={5}
         itemClassName="w-[47%] min-w-[47%] lg:w-[18.8%] lg:min-w-[18.8%]"
@@ -996,7 +1001,9 @@ function ProductCard({ product, quantity, wished, organicCertified = false, tall
   );
 }
 
-function ComboSection({ onDetails, onAdd }: { onDetails: (product: Product) => void; onAdd: (product: Product) => void }) {
+function ComboSection({ products, onDetails, onAdd }: { products: Product[]; onDetails: (product: Product) => void; onAdd: (product: Product) => void }) {
+  const comboProducts = products.length ? products : combos;
+
   return (
     <section className="mt-9 rounded-[18px] bg-[#fff2e7] px-4 py-6 lg:mt-16 lg:px-8 lg:py-9">
       <div className="mb-5 flex items-center justify-between gap-3">
@@ -1009,7 +1016,7 @@ function ComboSection({ onDetails, onAdd }: { onDetails: (product: Product) => v
         </button>
       </div>
       <SlidingRail
-        items={combos}
+        items={comboProducts}
         mobileItemsPerPage={2}
         desktopItemsPerPage={4}
         itemClassName="w-[47%] min-w-[47%] lg:w-[23.1%] lg:min-w-[23.1%]"

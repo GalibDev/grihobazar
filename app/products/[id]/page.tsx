@@ -21,7 +21,7 @@ export default function ProductDetailsPage() {
   const [activeTab, setActiveTab] = useState<"description" | "reviews">("description");
 
   useEffect(() => {
-    fetch("/api/products")
+    fetch("/api/products", { cache: "no-store" })
       .then((response) => response.json())
       .then((items: Product[]) => {
         setProducts(items);

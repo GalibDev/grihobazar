@@ -66,7 +66,7 @@ export default function CollectionPage() {
   const [sort, setSort] = useState("default");
 
   useEffect(() => {
-    Promise.all([fetch("/api/products"), fetch("/api/categories")])
+    Promise.all([fetch("/api/products", { cache: "no-store" }), fetch("/api/categories", { cache: "no-store" })])
       .then(async ([productResponse, categoryResponse]) => {
         setProducts(await productResponse.json());
         setCategories(await categoryResponse.json());
