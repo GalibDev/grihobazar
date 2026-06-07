@@ -43,6 +43,20 @@ const defaultProducts: Product[] = [
   { id: "spirulina-250g", title: "Organic Spirulina Powder 250 gm", category: "Organic", image: "https://backoffice.ghorerbazar.com/productImages/Ba33d1767588217.jpg", price: 1140, oldPrice: 1200, badge: "New Arrival", badgeTone: "orange", stock: "in" },
 ];
 
+const liveCategorySeedProducts: Product[] = [
+  { id: "combo-half-ghee", title: "Ghee (Half Kg) & Lychee Honey Sachet Combo", category: "Exclusive Combo Deals", image: "https://backoffice.ghorerbazar.com/storage/combos/1Xbv0tpGtgeSD6T0BHNp5daunFfZTAeDk9Qg76Eb.jpg", price: 1000, oldPrice: 1140, badge: "Save 12.3%", badgeTone: "green", stock: "in" },
+  { id: "combo-ghee-1kg", title: "Ghee (1 Kg) & Lychee Honey Sachet Combo", category: "Exclusive Combo Deals", image: "https://backoffice.ghorerbazar.com/storage/combos/eHFlh1X3A3xFiWdXUe2kXfVtaY5Ei77wEtlnC9fB.jpg", price: 1800, oldPrice: 2040, badge: "Save 11.8%", badgeTone: "green", stock: "in" },
+  { id: "combo-shahi-masala", title: "Shahi Masala & Lychee Honey Sachet Combo", category: "Exclusive Combo Deals", image: "https://backoffice.ghorerbazar.com/storage/combos/v2mWnfZX4GmmR0tFAT1KVpVwhEGS6F7H1BaRCPHJ.jpg", price: 1500, oldPrice: 1740, badge: "Save 13.8%", badgeTone: "green", stock: "in" },
+  { id: "combo-kala-bhuna", title: "Kala Bhuna & Lychee Honey Sachet Combo", category: "Exclusive Combo Deals", image: "https://backoffice.ghorerbazar.com/storage/combos/v2mWnfZX4GmmR0tFAT1KVpVwhEGS6F7H1BaRCPHJ.jpg", price: 1500, oldPrice: 1740, badge: "Save 13.8%", badgeTone: "green", stock: "in" },
+  { id: "combo-mustard-oil", title: "Mustard Oil & Lychee Honey Sachet Combo", category: "Exclusive Combo Deals", image: "https://backoffice.ghorerbazar.com/storage/combos/JmSEKuQ77LS2jBtQzhbqulglNPM9YIfOC3lS9sB6.jpg", price: 1600, oldPrice: 1790, badge: "Save 10.6%", badgeTone: "green", stock: "in" },
+  { id: "combo-black-cumin-oil", title: "Black Cumin Seed Oil & Lychee Honey Sachet Combo", category: "Exclusive Combo Deals", image: "https://backoffice.ghorerbazar.com/storage/combos/JmSEKuQ77LS2jBtQzhbqulglNPM9YIfOC3lS9sB6.jpg", price: 2500, oldPrice: 2740, badge: "Save 8.8%", badgeTone: "green", stock: "in" },
+  { id: "brand-honeyraj", title: "Honeyraj", category: "Our Brands", image: "https://backoffice.ghorerbazar.com/brand_images/7hNKq1768887947.png", price: 1, stock: "in" },
+  { id: "brand-shosti", title: "Shosti", category: "Our Brands", image: "https://backoffice.ghorerbazar.com/brand_images/RNTIU1763611802.png", price: 1, stock: "in" },
+  { id: "brand-ghorer-bazar", title: "Ghorer Bazar", category: "Our Brands", image: "https://backoffice.ghorerbazar.com/brand_images/M89ch1768888003.png", price: 1, stock: "in" },
+  { id: "brand-glarvest", title: "Glarvest", category: "Our Brands", image: "https://backoffice.ghorerbazar.com/brand_images/wPRK91768888154.png", price: 1, stock: "in" },
+  { id: "brand-tabaya", title: "Tabaya", category: "Our Brands", image: "https://backoffice.ghorerbazar.com/brand_images/YuK9J1768888227.png", price: 1, stock: "in" },
+];
+
 const defaultBanners: Banner[] = [
   { id: "mango-hero", title: "Mango offer", image: "https://backoffice.ghorerbazar.com/banner/hSjx41780379939-dark-1000x400.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/Gcahd1780379939-dark-500x280.png", category: "Mango", active: true },
   { id: "dates-hero", title: "Dates collection", image: "https://backoffice.ghorerbazar.com/banner/sCUkg1774768074-dark.png", mobileImage: "https://backoffice.ghorerbazar.com/banner/I2Vto1774768074-dark.png", category: "Dates", active: true },
@@ -164,12 +178,33 @@ async function seedDatabase() {
   }
 
   await supabase.from("categories").upsert(defaultCategories);
+  await seedLiveCategoryProducts();
 
   if ((count ?? 0) > 0) return;
 
   await supabase.from("products").upsert(defaultProducts.map(toProductRow));
   await supabase.from("banners").upsert(defaultBanners.map(toBannerRow));
   await supabase.from("settings").upsert(toSettingsRows(defaultSettings));
+}
+
+async function seedLiveCategoryProducts() {
+  const seedKey = "liveCategorySeed20260607";
+  const { data: existingSeed, error: seedError } = await supabase.from("settings").select("value").eq("key", seedKey).maybeSingle();
+  if (seedError) throw seedError;
+  if (existingSeed) return;
+
+  const seedIds = liveCategorySeedProducts.map((product) => product.id);
+  const { data: existingProducts, error: productError } = await supabase.from("products").select("id").in("id", seedIds);
+  if (productError) throw productError;
+
+  const existingIds = new Set((existingProducts ?? []).map((product) => String(product.id)));
+  const missingProducts = liveCategorySeedProducts.filter((product) => !existingIds.has(product.id));
+  if (missingProducts.length) {
+    const { error } = await supabase.from("products").insert(missingProducts.map(toProductRow));
+    if (error) throw error;
+  }
+
+  await supabase.from("settings").upsert({ key: seedKey, value: new Date().toISOString() });
 }
 
 async function readSettings(): Promise<StoreSettings> {

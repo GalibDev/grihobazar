@@ -99,7 +99,7 @@ export default function AdminPage() {
   const stockOut = products.filter((product) => product.stock === "out").length;
   const lowStockProducts = products.filter((product) => product.stock === "out" || product.stock === "preorder");
   const filteredProducts = products.filter((product) => {
-    const matchesCategory = selectedProductCategory === "All" || product.category === selectedProductCategory;
+    const matchesCategory = matchesAdminCategory(product, selectedProductCategory);
     const matchesQuery = `${product.title} ${product.category} ${product.stock ?? ""}`.toLowerCase().includes(productQuery.toLowerCase());
     return matchesCategory && matchesQuery;
   });
@@ -830,6 +830,29 @@ function AdminInput({
       />
     </label>
   );
+}
+
+function matchesAdminCategory(product: Product, selectedCategory: string) {
+  if (selectedCategory === "All") return true;
+  if (product.category === selectedCategory) return true;
+
+  if (selectedCategory === "Cooking Essentials") {
+    return ["Spices", "Flours & Lentils", "Oil & Ghee", "Rice"].includes(product.category);
+  }
+
+  if (selectedCategory === "Organic Certified") {
+    return product.category === "Organic";
+  }
+
+  if (selectedCategory === "Just For You") {
+    return product.category !== "Our Brands";
+  }
+
+  if (selectedCategory === "Exclusive Combo Deals") {
+    return product.category === "Combos";
+  }
+
+  return false;
 }
 
 function Th({ children }: { children: ReactNode }) {
