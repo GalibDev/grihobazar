@@ -358,7 +358,7 @@ const testimonials = [
 const menuItems = [
   { title: "Combos" },
   { title: "Offer Zone" },
-  { title: "Mango" },
+  { title: "Mango", children: ["Amrapali", "Himsagar"] },
   { title: "Honey", children: ["Sundarban Honey", "Black Seed Honey", "Lichu Flower Honey", "African Organic Honey", "Sidr Honey", "Honeycomb"] },
   { title: "Oil & Ghee" },
   { title: "Dates", children: ["Safawi/kalmi", "Medjool", "Sukkari", "Ajwa", "Mabroom"] },
@@ -411,7 +411,7 @@ const sections: ProductSectionData[] = [
   { title: "Just For You", action: "VIEW ALL PRODUCTS", category: "All", products },
 ];
 
-export default function HomePage() {
+export default function HomePage({ signedIn = false }: { signedIn?: boolean } = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [modal, setModal] = useState<ModalType>(null);
@@ -422,10 +422,12 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [showAllJustForYou, setShowAllJustForYou] = useState(false);
   const [storeProducts, setStoreProducts] = useState<Product[]>(products);
+  const [customerName, setCustomerName] = useState(signedIn ? "Customer" : "");
 
   const cartItems = Object.values(cart);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const isSignedIn = signedIn || Boolean(customerName);
   const storeCatalog = useMemo(() => {
     const hasLiveCombos = storeProducts.some((product) => product.category === "Exclusive Combo Deals");
     return hasLiveCombos ? storeProducts : [...storeProducts, ...combos];
@@ -472,6 +474,11 @@ export default function HomePage() {
     if (savedCart.length) {
       setCart(Object.fromEntries(savedCart.map((item) => [item.id, item])));
     }
+  }, []);
+
+  useEffect(() => {
+    const savedName = window.localStorage.getItem("grihobazar-customer-name");
+    if (savedName) setCustomerName(savedName);
   }, []);
 
   function addToCart(product: Product, quantity = 1) {
@@ -543,7 +550,7 @@ export default function HomePage() {
         </button>
       </header>
 
-      <DesktopHeader cartCount={cartCount} onModal={setModal} onCart={() => setCartOpen(true)} query={query} setQuery={setQuery} />
+      <DesktopHeader cartCount={cartCount} signedIn={isSignedIn} customerName={customerName} onModal={setModal} onCart={() => setCartOpen(true)} query={query} setQuery={setQuery} />
       <DesktopNav onCategory={jumpToCategory} />
 
       <main className="px-2 pb-[120px] pt-5 lg:mx-auto lg:max-w-[1233px] lg:px-[49px] lg:pb-24 lg:pt-9 xl:w-auto">
@@ -597,18 +604,18 @@ export default function HomePage() {
 
       <FloatingCart cartCount={cartCount} cartTotal={cartTotal} onClick={() => setCartOpen(true)} />
       <ChatButton />
-      <BottomNav cartCount={cartCount} onMenuClick={() => setMenuOpen(true)} onCart={() => setCartOpen(true)} onModal={setModal} />
-      <Drawer menuOpen={menuOpen} setMenuOpen={setMenuOpen} onModal={setModal} onCategory={jumpToCategory} wishlistCount={Object.keys(wishlist).length} />
+      <BottomNav cartCount={cartCount} signedIn={isSignedIn} onMenuClick={() => setMenuOpen(true)} onCart={() => setCartOpen(true)} onModal={setModal} />
+      <Drawer menuOpen={menuOpen} signedIn={isSignedIn} customerName={customerName} setMenuOpen={setMenuOpen} onModal={setModal} onCategory={jumpToCategory} wishlistCount={Object.keys(wishlist).length} />
       <CartDrawer open={cartOpen} items={cartItems} total={cartTotal} onClose={() => setCartOpen(false)} onQuantity={setQuantity} onCheckout={() => setModal("checkout")} />
       <AppModal modal={modal} product={selectedProduct} cartItems={cartItems} wishlist={Object.values(wishlist)} total={cartTotal} query={query} setQuery={setQuery} results={searchResults} onClose={() => setModal(null)} onAdd={addToCart} onDetails={openDetails} onQuantity={setQuantity} onCheckout={() => setModal("checkout")} />
     </div>
   );
 }
 
-function DesktopHeader({ cartCount, onModal, onCart, query, setQuery }: { cartCount: number; onModal: (modal: ModalType) => void; onCart: () => void; query: string; setQuery: (query: string) => void }) {
+function DesktopHeader({ cartCount, signedIn, customerName, onModal, onCart, query, setQuery }: { cartCount: number; signedIn: boolean; customerName: string; onModal: (modal: ModalType) => void; onCart: () => void; query: string; setQuery: (query: string) => void }) {
   const actions = [
     { label: "Track Order", icon: <MapPin />, onClick: () => onModal("track") },
-    { label: "Sign In", icon: <UserRound />, onClick: () => { window.location.href = "/login"; } },
+    { label: signedIn ? customerName || "Account" : "Sign In", icon: <UserRound />, onClick: () => { window.location.href = signedIn ? "/home" : "/login"; } },
     { label: "Wishlist", icon: <Heart />, onClick: () => onModal("wishlist") },
     { label: "Cart", icon: <ShoppingCart />, onClick: onCart, count: cartCount },
     { label: "More", icon: <Menu />, onClick: () => onModal("about") },
@@ -1512,15 +1519,15 @@ function AboutPanel() {
   );
 }
 
-function Drawer({ menuOpen, setMenuOpen, onModal, onCategory, wishlistCount }: { menuOpen: boolean; setMenuOpen: (value: boolean) => void; onModal: (modal: ModalType) => void; onCategory: (category: string) => void; wishlistCount: number }) {
+function Drawer({ menuOpen, signedIn, customerName, setMenuOpen, onModal, onCategory, wishlistCount }: { menuOpen: boolean; signedIn: boolean; customerName: string; setMenuOpen: (value: boolean) => void; onModal: (modal: ModalType) => void; onCategory: (category: string) => void; wishlistCount: number }) {
   return (
     <>
       {!menuOpen ? null : <button type="button" aria-label="Close menu overlay" onClick={() => setMenuOpen(false)} className="fixed inset-0 z-40 bg-black/50 lg:hidden" />}
       <button type="button" aria-label="Close menu" onClick={() => setMenuOpen(false)} className={`drawer-close-position fixed top-[25px] z-[46] h-[38px] w-[38px] text-white transition-opacity lg:hidden ${menuOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}><X className="h-[38px] w-[38px] stroke-[1.7]" /></button>
       <aside aria-hidden={!menuOpen} className={`phone-edge-left fixed bottom-0 top-0 z-[45] w-[min(74vw,326px)] overflow-y-auto bg-white px-[15px] pb-[90px] pt-[21px] transition-transform duration-300 max-[360px]:w-[78vw] lg:hidden ${menuOpen ? "visible translate-x-0" : "invisible -translate-x-[105%]"}`}>
-        <button type="button" onClick={() => { window.location.href = "/login"; }} className="mb-[35px] grid w-full grid-cols-[58px_1fr] items-center gap-3.5 rounded-[9px] bg-brand-orange p-3 text-left text-white">
+        <button type="button" onClick={() => { window.location.href = signedIn ? "/home" : "/login"; }} className="mb-[35px] grid w-full grid-cols-[58px_1fr] items-center gap-3.5 rounded-[9px] bg-brand-orange p-3 text-left text-white">
           <img className="h-[54px] w-[54px] rounded-full" src="https://ghorerbazar.com/assets/images/avatar.png" alt="" />
-          <div><strong className="block text-xl font-medium leading-none">Hello there!</strong><span className="block text-xl font-medium leading-none">Signin</span></div>
+          <div><strong className="block text-xl font-medium leading-none">{signedIn ? "Welcome back!" : "Hello there!"}</strong><span className="block text-xl font-medium leading-none">{signedIn ? customerName || "Account" : "Signin"}</span></div>
         </button>
         <div className="rounded-md bg-[#f5f5f5] px-[15px] py-[18px]">
           {menuItems.map((item) => (
@@ -1561,14 +1568,14 @@ function ChatButton() {
   );
 }
 
-function BottomNav({ cartCount, onMenuClick, onCart, onModal }: { cartCount: number; onMenuClick: () => void; onCart: () => void; onModal: (modal: ModalType) => void }) {
+function BottomNav({ cartCount, signedIn, onMenuClick, onCart, onModal }: { cartCount: number; signedIn: boolean; onMenuClick: () => void; onCart: () => void; onModal: (modal: ModalType) => void }) {
   return (
     <nav className="phone-edge-left phone-edge-right fixed bottom-0 z-30 grid h-[74px] grid-cols-5 items-center bg-brand-orange text-white lg:hidden">
       <BottomNavItem icon={<Home />} label="HOME" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} />
       <BottomNavItem icon={<LayoutGrid />} label="MENU" onClick={onMenuClick} />
       <BottomNavItem icon={<ShoppingBag />} label="CART" count={cartCount} onClick={onCart} />
       <BottomNavItem icon={<Search />} label="SEARCH" onClick={() => onModal("search")} />
-      <BottomNavItem icon={<UserRound />} label="ACCOUNT" onClick={() => { window.location.href = "/login"; }} />
+      <BottomNavItem icon={<UserRound />} label="ACCOUNT" onClick={() => { window.location.href = signedIn ? "/home" : "/login"; }} />
     </nav>
   );
 }

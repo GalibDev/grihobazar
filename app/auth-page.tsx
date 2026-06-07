@@ -45,7 +45,8 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
       const auth = await getFirebaseAuth();
       const { GoogleAuthProvider, signInWithPopup } = await import("firebase/auth");
       const result = await signInWithPopup(auth, new GoogleAuthProvider());
-      setMessage(`Google login successful: ${result.user.email ?? result.user.displayName ?? "account connected"}`);
+      rememberCustomer(result.user.displayName ?? result.user.email ?? "Customer");
+      window.location.href = "/home";
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Google login failed.");
     } finally {
@@ -90,7 +91,8 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
         return;
       }
 
-      setMessage(`Login successful: ${result.user.email ?? "account verified"}`);
+      rememberCustomer(result.user.displayName ?? result.user.email ?? "Customer");
+      window.location.href = "/home";
     } catch (error) {
       setMessage(formatFirebaseError(error));
     } finally {
@@ -194,6 +196,10 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
       </section>
     </main>
   );
+}
+
+function rememberCustomer(name: string) {
+  window.localStorage.setItem("grihobazar-customer-name", name);
 }
 
 function HeaderAction({ icon, label, badge, active }: { icon: ReactNode; label: string; badge?: string; active?: boolean }) {
