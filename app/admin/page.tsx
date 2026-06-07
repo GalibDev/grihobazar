@@ -65,6 +65,7 @@ const requiredCategoryNames = [
   "Mango",
   "Flours & Lentils",
   "Oil & Ghee",
+  "Beverage",
   "Organic",
   "Exclusive Combo Deals",
   "Cooking Essentials",
@@ -881,7 +882,7 @@ function matchesAdminCategory(product: Product, selectedCategory: string) {
   }
 
   if (selectedCategory === "Organic Certified") {
-    return product.category === "Organic";
+    return product.category === "Organic" || product.category === "Organic Certified" || /organic/i.test(product.title);
   }
 
   if (selectedCategory === "Just For You") {

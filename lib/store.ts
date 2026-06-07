@@ -21,6 +21,7 @@ const defaultCategories: Category[] = [
   { title: "Dates", slug: "dates", image: "https://backoffice.ghorerbazar.com/category_images/wgCR01774766402.png" },
   { title: "Spices", slug: "spices", image: "https://backoffice.ghorerbazar.com/category_images/hXyU71774766413.png" },
   { title: "Nuts & Seeds", slug: "nuts-seeds", image: "https://backoffice.ghorerbazar.com/category_images/5u39t1774766425.png" },
+  { title: "Beverage", slug: "beverage", image: "/placeholders/product.svg" },
   { title: "Mango", slug: "mango", image: "https://backoffice.ghorerbazar.com/productImages/gOT1X1779006694.jpg" },
   { title: "Flours & Lentils", slug: "flours-lentils", image: "https://backoffice.ghorerbazar.com/productImages/XA6LK1767439665.jpg" },
   { title: "Exclusive Combo Deals", slug: "exclusive-combo-deals", image: "/placeholders/product.svg" },
@@ -109,6 +110,81 @@ const liveSpicesNutsSeedProducts: Product[] = [
   { id: "black-cumin-kalojira-1kg", title: "Black Cumin (Kalojira) 1kg", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/DxUUp1767441748.jpg", price: 1000, stock: "in" },
   { id: "black-cumin-kalojira-500gm", title: "Black Cumin (Kalojira) 500gm", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/zG2Lz1767441659.jpg", price: 500, stock: "in" },
   { id: "local-mustard-seed-500g", title: "Local Mustard Seed 500g", category: "Nuts & Seeds", image: "https://backoffice.ghorerbazar.com/productImages/GitND1767515685.jpg", price: 165, stock: "in" },
+];
+
+const liveOilHoneyBeverageOrganicSeedProducts: Product[] = [
+  { id: "local-maghi-sarisha-oil-5-ltr", title: "Deshi Mustard Oil 5 liter", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/vkVdH1767248022.jpg", price: 1550, badge: "Best Selling", badgeTone: "orange", stock: "in" },
+  { id: "gawa-ghee-1kg", title: "Gawa Ghee 1kg", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/VvzII1767097227.jpg", price: 1700, oldPrice: 1800, badge: "Save 6%", badgeTone: "green", stock: "in" },
+  { id: "shosti-ghee-500gm", title: "Gawa Ghee 500gm", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/l4UhS1767097338.jpg", price: 850, oldPrice: 900, badge: "Save 6%", badgeTone: "green", stock: "in" },
+  { id: "deshi-mustard-oil-2ltr", title: "Deshi Mustard Oil 2 liter", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/xZ5261767248563.jpg", price: 620, stock: "in" },
+  { id: "gawa-ghee-400gm", title: "Gawa Ghee 400gm", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/hTKy21767012358.jpg", price: 720, stock: "in" },
+  { id: "organic-extra-virgin-coconut-oil-1ltr", title: "Organic Extra Virgin Coconut Oil 1ltr", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/WzvLW1771392026.jpg", price: 2030, stock: "in" },
+  { id: "gawa-ghee-200gm", title: "Gawa Ghee 200gm", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/RH0a31767012545.jpg", price: 360, stock: "in" },
+  { id: "organic-extra-virgin-coconut-oil-500ml", title: "Organic Extra Virgin Coconut Oil 500ml", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/BQ2SU1771304187.jpg", price: 1230, stock: "in" },
+  { id: "local-kalijira-oil-500ml", title: "Black Cumin Seed Oil 500ml", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/PvMzG1767099936.jpg", price: 1250, stock: "in" },
+  { id: "deshi-mustard-oil-1ltr", title: "Deshi Mustard Oil 1 liter", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/ETt5J1767248095.jpg", price: 310, stock: "in" },
+  { id: "palermo-extra-virgin-olive-oil-in-dark-marasca-glass-bottle-1-ltr-2", title: "Palermo Extra Virgin Olive Oil In Dark Marasca Glass Bottle 1 Ltr.", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/QvRXJ1773215972.jpg", price: 2499, stock: "in" },
+  { id: "local-kalijira-oil-1ltr", title: "Black Cumin Seed Oil 1ltr", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/dOEzT1767099850.jpg", price: 2500, stock: "in" },
+  { id: "gawa-ghee-250gm", title: "Gawa Ghee 250gm", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/PpKUt1767012456.jpg", price: 450, stock: "in" },
+  { id: "applied-nutrition-mct-oil-490-ml", title: "Applied Nutrition MCT Oil 490 ml", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/yKJ2k1777289453.jpg", price: 4650, stock: "in" },
+  { id: "olitalia-pomace-olive-oil-500ml", title: "Olitalia Pomace Olive Oil 500ml", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/QsruT1767264667.jpg", price: 1150, stock: "in" },
+  { id: "palermo-organic-extra-virgin-olive-oil-1ltr", title: "Palermo Organic Extra virgin Olive oil 1ltr", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/6Utax1778321314.jpg", price: 2999, stock: "in" },
+  { id: "olitalia-pomace-olive-oil-250ml", title: "Olitalia Pomace Olive Oil 250ml", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/qXWcs1767264944.jpg", price: 750, stock: "in" },
+  { id: "glarvest-organic-extra-virgin-olive-oil-5000-ml", title: "Glarvest Organic Extra Virgin Olive Oil 5000 ml", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/eeiO51767097933.jpg", price: 11000, stock: "out" },
+  { id: "deshi-mustard-oil-500ml", title: "Deshi Mustard Oil 500 ml", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/Nloeg1767248447.jpg", price: 155, stock: "in" },
+  { id: "local-kalijira-oil-250ml", title: "Black Cumin Seed Oil 250ml", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/B9QpI1767100108.jpg", price: 625, stock: "in" },
+  { id: "palermo-extra-virgin-olive-oil-in-tin-5-ltr", title: "Palermo Extra Virgin Olive Oil In Tin 5 Ltr", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/Hq9H21777788826.jpg", price: 11299, stock: "out" },
+  { id: "palermo-organic-extra-virgin-olive-oil-5ltr", title: "Palermo Organic Extra Virgin Olive Oil 5ltr", category: "Oil & Ghee", image: "https://backoffice.ghorerbazar.com/productImages/1oNuT1777788069.jpg", price: 13499, stock: "out" },
+  { id: "sundarban-honey", title: "Sundarban Honey 1kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/CvT2N1767414529.jpg", price: 2300, oldPrice: 2500, badge: "Save 8%", badgeTone: "green", stock: "in" },
+  { id: "african-organic-wild-honey-500g", title: "African Organic Wild Honey 500g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/g7Qx11775107164.jpg", price: 1100, oldPrice: 1250, badge: "Save 12%", badgeTone: "green", stock: "in" },
+  { id: "black-seed-honey-500g", title: "Black Seed Honey 500g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/JdeWl1767418564.jpg", price: 750, oldPrice: 800, badge: "Save 6%", badgeTone: "green", stock: "in" },
+  { id: "natural-honeycomb-1kg", title: "Natural Honeycomb- 1kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/8ZFYk1767532058.jpg", price: 2250, oldPrice: 2500, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "lichu-fuler-modhu-500-gm", title: "Lychee Flower Honey 500g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/TtgOl1767418640.jpg", price: 550, oldPrice: 600, badge: "Save 8%", badgeTone: "green", stock: "in" },
+  { id: "kashmiri-sidr-honey-800g", title: "Kashmiri Sidr Honey 800g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/OY4JB1768121526.jpg", price: 1800, oldPrice: 2000, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "lichu-flower-honey-1kg", title: "Lychee Flower Honey 1kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/A14zf1767418585.jpg", price: 1100, oldPrice: 1200, badge: "Save 8%", badgeTone: "green", stock: "in" },
+  { id: "sundarban-honey-15g-x-24-pcs-box", title: "Sundarban Honey 15g X 24 pcs (BOX)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/xtAP01776075952.png", price: 768, stock: "in" },
+  { id: "sundarban-honey-500gm", title: "Sundarban Honey 500 gm", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/jaJ6i1767418800.jpg", price: 1150, oldPrice: 1250, badge: "Save 8%", badgeTone: "green", stock: "in" },
+  { id: "lychee-flower-honey-15g-x-24-pcs-box", title: "Lychee Flower Honey 15g X 24 pcs (BOX)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/UxodJ1776075897.png", price: 432, stock: "in" },
+  { id: "sundarban-honey-8g-x-24-pcs-box", title: "Sundarban Honey 8g X 24 pcs (BOX)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/omV471776075964.png", price: 432, stock: "in" },
+  { id: "lychee-flower-honey-8g-x-24-pcs-box", title: "Lychee Flower Honey 8g X 24 pcs (BOX)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/tpOaP1776075938.png", price: 240, stock: "in" },
+  { id: "african-organic-wild-honey-250g", title: "African Organic Wild Honey 250g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/htkho1767418769.jpg", price: 625, stock: "in" },
+  { id: "crystal-honey-2kg", title: "Crystal Honey 2kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/4hJVs1767855299.jpg", price: 2000, oldPrice: 2200, badge: "Save 9%", badgeTone: "green", stock: "in" },
+  { id: "honeyraj-mixed-flower-honey-with-honeycomb-500g", title: "Mixed Flower Honey with Comb 500g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/0ldaX1767531519.jpg", price: 900, oldPrice: 1000, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "african-organic-wild-honey-1kg", title: "African Organic Wild Honey 1kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/6ctmE1775107173.jpg", price: 2200, oldPrice: 2500, badge: "Save 12%", badgeTone: "green", stock: "in" },
+  { id: "kashmiri-sidr-honey-250g", title: "Kashmiri Sidr Honey 250g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/QdxZW1771328171.png", price: 625, stock: "in" },
+  { id: "black-seed-honey-1kg", title: "Black Seed Honey 1kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/fAewT1767418525.jpg", price: 1500, oldPrice: 1600, badge: "Save 6%", badgeTone: "green", stock: "in" },
+  { id: "honeyraj-mixed-flower-honey-with-honeycomb-250g", title: "Mixed Flower Honey with Comb 250g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/XCftg1767531570.jpg", price: 450, oldPrice: 500, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "sundarban-honey-250gm", title: "Sundarban Honey 250gm", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/wPcmU1767418820.jpg", price: 625, stock: "in" },
+  { id: "black-seed-honey-250g", title: "Black Seed Honey 250g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/4mXh51767258754.jpg", price: 400, stock: "in" },
+  { id: "lichu-fuler-modhu-250gm", title: "Lychee Flower Honey 250g", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/ykmIX1767418655.jpg", price: 300, stock: "in" },
+  { id: "natural-honeycomb-1800g-briefcase", title: "Natural Honeycomb-1800g (Briefcase)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/SvuQG1767531952.jpg", price: 4050, oldPrice: 4500, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "black-seed-flower-honey-sachet-box-8x24-192-gm", title: "Black Seed Flower Honey Sachet Box (8x24) 192 gm", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/Nq4N51777290379.png", price: 360, stock: "in" },
+  { id: "natural-honeycomb-1600gm-briefcase", title: "Natural Honeycomb-1600gm (Briefcase)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/aJbHf1767531809.jpg", price: 3600, oldPrice: 4000, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "honey-special-combo-pack-4-types-honey-2", title: "Honey Special Combo Pack (4 types Honey)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/OxAWv1770619134.jpeg", price: 1700, oldPrice: 1950, badge: "Save 13%", badgeTone: "green", stock: "in" },
+  { id: "crystal-honey-1kg", title: "Crystal Honey 1kg", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/ObvIi1767855359.jpg", price: 1000, oldPrice: 1100, badge: "Save 9%", badgeTone: "green", stock: "in" },
+  { id: "natural-honeycomb-1700g-briefcase", title: "Natural Honeycomb- 1700g (Briefcase)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/mn9wX1767531906.jpg", price: 3825, oldPrice: 4250, badge: "Save 10%", badgeTone: "green", stock: "in" },
+  { id: "african-organic-wild-honey-8g-24-pcs-box-192-gm", title: "African Organic Wild Honey 8g x 24 pcs (Box) 192 gm", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/7EyFg1779602650.jpeg", price: 432, stock: "in" },
+  { id: "african-organic-wild-honey-15g-24-pcs-box-360-gm", title: "African Organic Wild Honey 15g x 24 pcs (Box) 360 gm", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/icPDg1779602669.jpeg", price: 768, stock: "in" },
+  { id: "black-seed-flower-honey-sachet-box-15x24-360-gm", title: "Black Seed Flower Honey Sachet Box (15x24) 360 gm", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/w7Z7V1779530070.jpeg", price: 623, stock: "in" },
+  { id: "natural-honeycomb-1500gm-briefcase", title: "Natural Honeycomb-1500gm (Briefcase)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/YG3so1778149783.jpg", price: 3750, stock: "out" },
+  { id: "natural-honeycomb-2000gm-briefcase", title: "Natural Honeycomb-2000gm (Briefcase)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/eqcyQ1778149725.jpg", price: 5000, stock: "out" },
+  { id: "natural-honeycomb-1400gm-briefcase", title: "Natural Honeycomb-1400gm (Briefcase)", category: "Honey", image: "https://backoffice.ghorerbazar.com/productImages/1UETs1778142413.jpg", price: 3500, stock: "out" },
+  { id: "glarvest-organic-longjing-green-tea-100gm", title: "Glarvest Organic Longjing Green Tea 100gm", category: "Beverage", image: "https://backoffice.ghorerbazar.com/productImages/N5YD71771491292.png", price: 1400, stock: "in" },
+  { id: "glarvest-organic-matcha-green-tea-100gm", title: "Glarvest Organic Matcha Green Tea 100gm", category: "Beverage", image: "https://backoffice.ghorerbazar.com/productImages/lUcpq1771491205.webp", price: 1500, stock: "in" },
+  { id: "sreemangals-tea-gold-500g", title: "Sreemangal's Tea Gold 500g", category: "Beverage", image: "https://backoffice.ghorerbazar.com/productImages/gXpJj1767441387.jpg", price: 300, stock: "in" },
+  { id: "sreemangals-tea-gold-1kg", title: "Sreemangal's Tea Gold 1kg", category: "Beverage", image: "https://backoffice.ghorerbazar.com/productImages/mwiY41767441265.jpg", price: 600, stock: "in" },
+  { id: "maccoffee-gold-100gm", title: "Maccoffee Gold 100gm", category: "Beverage", image: "https://backoffice.ghorerbazar.com/productImages/LGVJZ1767264473.jpg", price: 850, stock: "in" },
+  { id: "maccoffee-original-100gm", title: "Maccoffee Original 100gm", category: "Beverage", image: "https://backoffice.ghorerbazar.com/productImages/NfH0L1767264327.jpg", price: 675, stock: "in" },
+  { id: "maccoffee-orginal-95gm", title: "MacCoffee Orginal 95gm", category: "Beverage", image: "https://backoffice.ghorerbazar.com/productImages/jF75P1767264254.jpg", price: 465, stock: "in" },
+  { id: "ashwagandha-powder-100g-usda-organic-certified", title: "Ashwagandha Powder 100g (USDA Organic Certified)", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/rubc61777091900.jpg", price: 600, stock: "in" },
+  { id: "ceylon-organic-coconut-milk-c-400ml", title: "Ceylon Organic Coconut Milk (C) 400ml", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/lNdtA1767521662.jpeg", price: 350, stock: "in" },
+  { id: "ceylon-organic-coconut-vinegar-500ml", title: "Ceylon Organic Coconut Vinegar 500ml", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/GHKMJ1772862114.png", price: 1065, stock: "in" },
+  { id: "discovery-organic-apple-cider-vinegar-250ml", title: "Discovery Organic Apple Cider Vinegar 250ml", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/TTSB61772525925.png", price: 490, stock: "out" },
+  { id: "karkuma-organic-apple-cider-vinegar-480ml", title: "Karkuma Organic Apple Cider Vinegar (480ml)", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/nzvWc1767505402.jpg", price: 750, stock: "in" },
+  { id: "discovery-organic-apple-cider-vinegar-1-litter", title: "Discovery Organic Apple Cider Vinegar 1 litter", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/NNucf1767440969.jpg", price: 1325, stock: "in" },
+  { id: "discovery-organic-apple-cider-vinegar-500ml", title: "Discovery Organic Apple Cider Vinegar (500ml)", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/6qLeh1767440861.jpg", price: 750, stock: "out" },
+  { id: "karkuma-organic-turmeric-immune-booster", title: "Karkuma Organic Turmeric Immune Booster", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/n3lmQ1767438839.jpg", price: 390, stock: "in" },
+  { id: "karkuma-organic-healthy-gut", title: "Karkuma Organic Healthy Gut", category: "Organic Certified", image: "https://backoffice.ghorerbazar.com/productImages/3Htjv1767438695.jpg", price: 800, stock: "in" },
 ];
 
 const defaultBanners: Banner[] = [
@@ -236,6 +312,7 @@ async function seedDatabase() {
 
   if ((count ?? 0) > 0) {
     await seedLiveSpicesNutsProducts();
+    await seedLiveOilHoneyBeverageOrganicProducts();
     return;
   }
 
@@ -243,6 +320,7 @@ async function seedDatabase() {
   await supabase.from("banners").upsert(defaultBanners.map(toBannerRow));
   await supabase.from("settings").upsert(toSettingsRows(defaultSettings));
   await seedLiveSpicesNutsProducts();
+  await seedLiveOilHoneyBeverageOrganicProducts();
 }
 
 async function seedLiveCategoryProducts() {
@@ -277,6 +355,26 @@ async function seedLiveSpicesNutsProducts() {
   const existingIds = new Set((existingProducts ?? []).map((product) => String(product.id)));
   const existingTitles = new Set((existingProducts ?? []).map((product) => String(product.title).toLowerCase()));
   const missingProducts = liveSpicesNutsSeedProducts.filter((product) => !existingIds.has(product.id) && !existingTitles.has(product.title.toLowerCase()));
+  if (missingProducts.length) {
+    const { error } = await supabase.from("products").insert(missingProducts.map(toProductRow));
+    if (error) throw error;
+  }
+
+  await supabase.from("settings").upsert({ key: seedKey, value: new Date().toISOString() });
+}
+
+async function seedLiveOilHoneyBeverageOrganicProducts() {
+  const seedKey = "liveOilHoneyBeverageOrganicSeed20260607";
+  const { data: existingSeed, error: seedError } = await supabase.from("settings").select("value").eq("key", seedKey).maybeSingle();
+  if (seedError) throw seedError;
+  if (existingSeed) return;
+
+  const { data: existingProducts, error: productError } = await supabase.from("products").select("id,title");
+  if (productError) throw productError;
+
+  const existingIds = new Set((existingProducts ?? []).map((product) => String(product.id)));
+  const existingTitles = new Set((existingProducts ?? []).map((product) => String(product.title).toLowerCase()));
+  const missingProducts = liveOilHoneyBeverageOrganicSeedProducts.filter((product) => !existingIds.has(product.id) && !existingTitles.has(product.title.toLowerCase()));
   if (missingProducts.length) {
     const { error } = await supabase.from("products").insert(missingProducts.map(toProductRow));
     if (error) throw error;
