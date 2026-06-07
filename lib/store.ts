@@ -23,6 +23,11 @@ const defaultCategories: Category[] = [
   { title: "Nuts & Seeds", slug: "nuts-seeds", image: "https://backoffice.ghorerbazar.com/category_images/5u39t1774766425.png" },
   { title: "Mango", slug: "mango", image: "https://backoffice.ghorerbazar.com/productImages/gOT1X1779006694.jpg" },
   { title: "Flours & Lentils", slug: "flours-lentils", image: "https://backoffice.ghorerbazar.com/productImages/XA6LK1767439665.jpg" },
+  { title: "Exclusive Combo Deals", slug: "exclusive-combo-deals", image: "/placeholders/product.svg" },
+  { title: "Cooking Essentials", slug: "cooking-essentials", image: "/placeholders/product.svg" },
+  { title: "Organic Certified", slug: "organic-certified", image: "/placeholders/product.svg" },
+  { title: "Just For You", slug: "just-for-you", image: "/placeholders/product.svg" },
+  { title: "Our Brands", slug: "our-brands", image: "/placeholders/product.svg" },
 ];
 
 const defaultProducts: Product[] = [
@@ -158,9 +163,10 @@ async function seedDatabase() {
     throw new Error(`Supabase schema missing. Run supabase/schema.sql first. ${error.message}`);
   }
 
+  await supabase.from("categories").upsert(defaultCategories);
+
   if ((count ?? 0) > 0) return;
 
-  await supabase.from("categories").upsert(defaultCategories);
   await supabase.from("products").upsert(defaultProducts.map(toProductRow));
   await supabase.from("banners").upsert(defaultBanners.map(toBannerRow));
   await supabase.from("settings").upsert(toSettingsRows(defaultSettings));

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import type { ClipboardEvent, ReactNode } from "react";
 import {
   Boxes,
   CheckCircle2,
@@ -57,6 +57,22 @@ const defaultSettings: StoreSettings = {
   whatsappNumber: "",
 };
 
+const requiredCategoryNames = [
+  "Honey",
+  "Dates",
+  "Spices",
+  "Nuts & Seeds",
+  "Mango",
+  "Flours & Lentils",
+  "Oil & Ghee",
+  "Organic",
+  "Exclusive Combo Deals",
+  "Cooking Essentials",
+  "Organic Certified",
+  "Just For You",
+  "Our Brands",
+];
+
 const formatPrice = (price: number) => `৳${price.toLocaleString("en-US")}`;
 
 export default function AdminPage() {
@@ -92,8 +108,7 @@ export default function AdminPage() {
   );
 
   const categoryNames = useMemo(() => {
-    const names = Array.from(new Set([...categories.map((category) => category.title), ...products.map((product) => product.category)]));
-    return names.length ? names : ["Honey", "Oil & Ghee", "Dates", "Spices", "Mango", "Organic"];
+    return Array.from(new Set([...categories.map((category) => category.title), ...products.map((product) => product.category), ...requiredCategoryNames]));
   }, [categories, products]);
 
   useEffect(() => {
@@ -168,7 +183,7 @@ export default function AdminPage() {
     await loadData();
   }
 
-  async function uploadImage(file: File | null) {
+  async function uploadImage(file: File | null, source: "upload" | "paste" = "upload") {
     if (!file) return;
     setUploading(true);
     const formData = new FormData();
@@ -178,12 +193,35 @@ export default function AdminPage() {
 
     if (response.ok) {
       setDraft((current) => ({ ...current, image: result.url }));
+      if (source === "paste") {
+        setMessage("Pasted image upload hoyeche.");
+        setUploading(false);
+        return;
+      }
       setMessage("Image upload হয়েছে।");
     } else {
       setMessage(result.message ?? "Upload failed");
     }
 
     setUploading(false);
+  }
+
+  function handleImagePaste(event: ClipboardEvent<HTMLLabelElement>) {
+    const items = Array.from(event.clipboardData.items);
+    const imageItem = items.find((item) => item.type.startsWith("image/"));
+
+    if (imageItem) {
+      event.preventDefault();
+      void uploadImage(imageItem.getAsFile(), "paste");
+      return;
+    }
+
+    const pastedText = event.clipboardData.getData("text").trim();
+    if (/^https?:\/\/.+\.(png|jpe?g|webp|gif|avif)(\?.*)?$/i.test(pastedText)) {
+      event.preventDefault();
+      setDraft((current) => ({ ...current, image: pastedText }));
+      setMessage("Pasted image URL ready. Save chapun.");
+    }
   }
 
   async function logout() {
@@ -368,7 +406,11 @@ export default function AdminPage() {
                   <p className="mt-2 text-xs text-[#666]">Image ready. Product list-এ আনতে নিচের Save button চাপুন।</p>
                 </div>
               ) : null}
-              <label className="grid gap-1 text-sm font-semibold">
+              <label
+                onPaste={handleImagePaste}
+                tabIndex={0}
+                className="grid gap-2 rounded border border-dashed border-[#d1d5db] p-3 text-sm font-semibold outline-none focus:border-brand-orange focus:bg-[#fff8f1]"
+              >
                 Upload Image
                 <input
                   type="file"
@@ -377,6 +419,7 @@ export default function AdminPage() {
                   className="rounded border px-3 py-2 text-sm font-normal"
                 />
                 {uploading ? <span className="text-xs text-[#777]">Uploading...</span> : <span className="text-xs text-[#777]">Upload করার পর image preview দেখালে Save চাপতে হবে।</span>}
+                <span className="text-xs text-[#777]">Copy kora image paste korte ei upload box-e click kore Ctrl+V chapun.</span>
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <AdminInput label="Price" type="number" value={String(draft.price || "")} onChange={(value) => setDraft({ ...draft, price: Number(value) })} />
